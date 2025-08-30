@@ -8,9 +8,9 @@ class Municipios extends Model
 {
      protected $table = 'municipios';
      protected $fillable = [ 
-     'nombre_municipio',
+     'Nombre_Municipio',
      'idDepartamento',
-     'idActividad'
+    
      ];
 
     public function departamento()
