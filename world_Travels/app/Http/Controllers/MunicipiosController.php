@@ -35,7 +35,7 @@ class MunicipiosController extends Controller
         $municipios = Municipios::find($id);
 
         if (!$municipios) { 
-            return response->json(['menssage'=> 'municipio no encontrado'], 404);
+            return response()->json(['menssage'=> 'municipio no encontrado'], 404);
         }
 
         return response()->json($municipios);
@@ -46,7 +46,7 @@ class MunicipiosController extends Controller
           $municipios = Municipios::find($id);
 
           if (!$municipios) { 
-            return response->json(['menssage'=> 'municipio no encontrado para editar '], 404);
+            return response()->json(['menssage'=> 'municipio no encontrado para editar '], 404);
         }
 
          $validator = Validator::make($request->all(),[
@@ -68,7 +68,7 @@ class MunicipiosController extends Controller
     {
          $municipios = Municipios::find($id);
           if (!$municipios) { 
-            return response->json(['menssage'=> 'municipio no encontrado para eliminar '], 404);
+            return response()->json(['menssage'=> 'municipio no encontrado para eliminar '], 404);
         }
           $municipios->delete();
           return response()->json(['message' => 'municipio eliminado con exito']); 

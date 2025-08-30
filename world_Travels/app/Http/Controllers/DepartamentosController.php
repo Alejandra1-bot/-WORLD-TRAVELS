@@ -31,7 +31,7 @@ class DepartamentosController extends Controller
             $departamentos = Departamentos::find($id);
     
             if (!$departamentos) { 
-                return response->json(['menssage'=> 'Departamento no encontrado'], 404);
+                return response()->json(['menssage'=> 'Departamento no encontrado'], 404);
             }
     
             return response()->json($departamentos);
@@ -42,7 +42,7 @@ class DepartamentosController extends Controller
           $departamentos = Departamentos::find($id);
 
           if (!$departamentos) { 
-            return response->json(['menssage'=> 'Departamento no encontrado para editar '], 404);
+            return response()->json(['menssage'=> 'Departamento no encontrado para editar '], 404);
          }
 
          $validator = Validator::make($request->all(),[
@@ -63,7 +63,7 @@ class DepartamentosController extends Controller
      {
          $departamentos = Departamentos::find($id);
           if (!$departamentos) { 
-            return response->json(['menssage'=> 'Departamento no encontrado para eliminar '], 404);
+            return response()->json(['menssage'=> 'Departamento no encontrado para eliminar '], 404);
         }
           $departamentos->delete();
           return response()->json(['message' => 'Departamento eliminado con exito']); 
