@@ -10,6 +10,7 @@ use App\Http\Controllers\MunicipiosController;
 use App\Http\Controllers\CategoriasActividadesController;
 use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\ReservasController;
+use App\Http\Controllers\ComentariosController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -28,11 +29,3 @@ Route::post('crearDepartamentos', [DepartamentosController::class, 'store']);
 Route::get('departamentos/{id}', [DepartamentosController::class, 'show']);
 Route::put('actualizarDepartamentos/{id}', [DepartamentosController::class, 'update']);
 Route::delete('eliminarDepartamentos/{id}', [DepartamentosController::class, 'destroy']);
-// Rutas para Municipios
-Route::get('listarMunicipios', [MunicipiosController::class, 'index']);
-Route::post('crearMunicipios', [MunicipiosController::class, 'store']);
-Route::get('municipios/{id}', [MunicipiosController::class, 'show']);
-Route::put('actualizarMunicipios/{id}', [MunicipiosController::class, 'update']);
-Route::delete('eliminarMunicipios/{id}', [MunicipiosController::class, 'destroy']);
-// Rutas para CategoriasActividades
-Route::get('listarCategoriasActividades', [CategoriasActividadesController::class, 'index']);

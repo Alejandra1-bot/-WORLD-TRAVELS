@@ -40,7 +40,7 @@ class UsuariosController extends Controller
         $usuarios = Usuarios::find($id);
 
         if (!$usuarios) { 
-            return response->json(['menssage'=> 'Usuario no encontrado'], 404);
+            return response()->json(['menssage'=> 'Usuario no encontrado'], 404);
         }
 
         return response()->json($usuarios);
@@ -51,7 +51,7 @@ class UsuariosController extends Controller
           $usuarios = Usuarios::find($id);
 
           if (!$usuarios) { 
-            return response->json(['menssage'=> 'Usuario no encontrado para editar '], 404);
+            return response()->json(['menssage'=> 'Usuario no encontrado para editar '], 404);
         }
 
          $validator = Validator::make($request->all(),[
@@ -78,7 +78,7 @@ class UsuariosController extends Controller
     {
          $usuarios = Usuarios::find($id);
           if (!$usuarios) { 
-            return response->json(['menssage'=> 'Usuario no encontrado para eliminar '], 404);
+            return response()->json(['menssage'=> 'Usuario no encontrado para eliminar '], 404);
         }
           $usuarios->delete();
           return response()->json(['message' => 'Usuarios eliminado con exito']); 

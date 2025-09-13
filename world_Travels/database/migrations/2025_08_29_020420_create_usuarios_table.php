@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('Telefono');
             $table->string('Nacionalidad');
             $table->date('Fecha_Registro')->default(now());
-            $table->string('Rol', ['administrador', 'cliente', 'organizador'])->default('cliente');
+            $table->enum('Rol', ['administrador', 'cliente', 'organizador'])->default('cliente');
             $table->timestamps();
         });
     }
