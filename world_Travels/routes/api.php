@@ -12,9 +12,10 @@ use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\ReservasController;
 use App\Http\Controllers\ComentariosController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+
 
 // Rutas para Usuarios
 Route::get('listarUsuarios', [UsuariosController::class, 'index']);
