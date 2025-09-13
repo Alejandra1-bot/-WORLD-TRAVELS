@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Usuarios extends Model
+class Usuarios extends Authenticatable implements JWTSubject
 {
     protected $table = 'usuarios';
+
     protected $fillable = [
         'Nombre', 
         'Apellido', 
@@ -17,6 +19,18 @@ class Usuarios extends Model
         'Fecha_Registro', 
         'Rol'
     ];
+
+    // Métodos requeridos por JWT
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
      public function reservas()
     {
         return $this->hasMany(Reservas::class, 'idUsuario');
