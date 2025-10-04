@@ -98,10 +98,5 @@ Route::delete('eliminarReservas/{id}', [ReservasController::class, 'destroy']);
 Route::get('listarComentarios', [ComentariosController::class, 'index']);
 Route::post('crearComentarios', [ComentariosController::class, 'store']);
 Route::get('comentarios/{id}', [ComentariosController::class, 'show']);
-<<<<<<< HEAD
-// Route::put('actualizarComentarios/{id}', [ComentariosController::class, 'update']);
-Route::delete('eliminarComentarios/{id}', [ComentariosController::class, 'destroy']);
-=======
 Route::put('actualizarComentarios/{id}', [ComentariosController::class, 'update']);
 Route::delete('eliminarComentarios/{id}', [ComentariosController::class, 'destroy']);
->>>>>>> 9367a32cdd072e070da4db421dac99613ebb1063
