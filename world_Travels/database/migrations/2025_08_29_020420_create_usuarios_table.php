@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('Nacionalidad');
             $table->date('Fecha_Registro')->default(now());
             $table->enum('Rol', ['administrador', 'cliente', 'organizador'])->default('cliente');
+             $table->rememberToken();
             $table->timestamps();
         });
     }

@@ -6,29 +6,47 @@ use Illuminate\Database\Eloquent\Model;
 
 class Usuarios extends Model
 {
+    /**
+     * Nombre de la tabla asociada en la base de datos
+     */
     protected $table = 'usuarios';
+
+    /**
+     * Campos que se pueden asignar de manera masiva (mass assignment).
+     */
     protected $fillable = [
-        'Nombre', 
-        'Apellido', 
-        'Email',
-        'Contraseña', 
-        'Telefono', 
-        'Nacionalidad', 
-        'Fecha_Registro', 
-        'Rol'
+        'Nombre',          // Nombre del usuario
+        'Apellido',        // Apellido del usuario
+        'Email',           // Correo electrónico
+        'Contraseña',      // Contraseña (⚠️ recomendable cambiar a "password" sin tilde)
+        'Telefono',        // Número de teléfono
+        'Nacionalidad',    // País de origen
+        'Fecha_Registro',  // Fecha en que se registró el usuario
+        'Rol'              // Rol dentro del sistema (ej: admin, cliente)
     ];
-     public function reservas()
+
+    /**
+     * Relación con Reservas
+     * Un usuario puede tener muchas reservas.
+     */
+    public function reservas()
     {
         return $this->hasMany(Reservas::class, 'idUsuario');
     }
 
-    // Relación: un usuario puede crear muchas actividades
+    /**
+     * Relación con Actividades
+     * Un usuario puede crear muchas actividades.
+     */
     public function actividades()
     {
         return $this->hasMany(Actividades::class, 'idUsuario');
     }
 
-    // Relación: un usuario puede hacer muchos comentarios
+    /**
+     * Relación con Comentarios
+     * Un usuario puede hacer muchos comentarios.
+     */
     public function comentarios()
     {
         return $this->hasMany(Comentarios::class, 'idUsuario');
