@@ -76,7 +76,7 @@
             .then(data => {
                 if (data.success) {
                     localStorage.setItem('token', data.token);
-                    window.location.href = '{{ route("home") }}';
+                    window.location.href = '{{ route("dashboard") }}';
                 } else {
                     document.getElementById('message').innerText = 'Credenciales inválidas';
                 }

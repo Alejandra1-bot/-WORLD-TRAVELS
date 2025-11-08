@@ -22,6 +22,10 @@ Route::get('/search', function () {
     return view('search');
 })->name('search');
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
+
 Route::post('/logout', function () {
     // Aquí podrías manejar logout si es necesario, pero como es API, quizás redirigir
     return redirect()->route('home');

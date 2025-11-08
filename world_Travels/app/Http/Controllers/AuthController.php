@@ -13,11 +13,13 @@ class AuthController extends Controller
     public function registrar(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:usuarios',
-            'password' => 'required|string|min:8',
-            'email_verified_at' => 'nullable|date',
-            'roles'=>'required|string|in:admin,usuarios' // rol puede ser admin o usuarios
+            'Nombre' => 'required|string|max:255',
+            'Apellido' => 'required|string|max:255',
+            'Email' => 'required|string|email|max:255|unique:usuarios',
+            'Contraseña' => 'required|string|min:8',
+            'Telefono' => 'required|string|max:20',
+            'Nacionalidad' => 'required|string|max:255',
+            'Rol' => 'required|string|in:Turista,Guía Turístico,Administrador'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -26,34 +28,37 @@ class AuthController extends Controller
             ], 422);
         }
         $usuarios = Usuarios::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password), // hash hace que la contraseña no se vea en texto plano
-            'roles'=> $request->roles,
+            'Nombre' => $request->Nombre,
+            'Apellido' => $request->Apellido,
+            'Email' => $request->Email,
+            'Contraseña' => Hash::make($request->Contraseña),
+            'Telefono' => $request->Telefono,
+            'Nacionalidad' => $request->Nacionalidad,
+            'Rol' => $request->Rol,
         ]);
 
         try{
-            $token = JWTAuth::fromUsuarios($usuarios);  
+            $token = JWTAuth::fromUser($usuarios);
             return response()->json([
             'success' => true,
-            'Usuarios' => $usuarios,
-            'token' => $token,      
-            ], 201);   
+            'usuario' => $usuarios,
+            'token' => $token,
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'No se pudo crear el Token JWT',
                 'error' => $e->getMessage(),
-            ], 500);  
-           
-        }  
+            ], 500);
+
+        }
     } 
 
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string|min:8',
+            'Email' => 'required|string|email',
+            'Contraseña' => 'required|string|min:8',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -61,31 +66,31 @@ class AuthController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('Email', 'Contraseña');
         if (! $token = JWTAuth::attempt($credentials)) {
             return response()->json([
                'success' => false,
-                'message' => 'Credenciales invalidas',
+                 'message' => 'Credenciales inválidas',
             ], 401);
-        }  
+        }
         return response()->json([
             'success' => true,
             'token' => $token,
-        ]);     
-   }
+        ]);
+    }
 
     public function logout(){
         try{
-            $usuarios = JWTAuth::usuarios(); // validar el usuario logeado
+            $usuarios = JWTAuth::user(); // validar el usuario logeado
             JWTAuth::invalidate(JWTAuth::getToken()); // invalidar el token
             return response()->json([
                 'success' => true,
-                'message' => $usuarios->name.' ha cerrado sesion correctamente',
+                'message' => $usuarios->Nombre.' ha cerrado sesión correctamente',
             ], 200);
         }catch(\Exception $e){
             return response()->json([
                 'success' => false,
-                'message' => ' Error al  cerrar la sesion',
+                'message' => 'Error al cerrar la sesión',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -95,7 +100,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'success' => true,
-            'usuarios' => JWTAuth::usuarios(),
+            'usuario' => JWTAuth::user(),
         ], 200);
     }
     

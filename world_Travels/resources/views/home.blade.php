@@ -27,6 +27,7 @@
                 <a href="{{ route('home') }}" class="text-gray-700 hover:text-blue-600 transition">Inicio</a>
                 <a href="{{ route('search') }}" class="text-gray-700 hover:text-blue-600 transition">Buscar Actividades</a>
                 @auth
+                    <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600 transition">Mi Dashboard</a>
                     <a href="{{ route('logout') }}" class="text-gray-700 hover:text-blue-600 transition">Cerrar Sesión</a>
                 @else
                     <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 transition">Iniciar Sesión</a>
@@ -171,7 +172,7 @@
                                         <span class="text-2xl font-bold text-blue-600">$${actividad.precio}</span>
                                         <span class="text-sm text-gray-500">${actividad.ubicacion}</span>
                                     </div>
-                                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">Reservar Ahora</button>
+                                    <button onclick="window.location.href='{{ route('search') }}'" class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">Ver Más</button>
                                 </div>
                             `;
                             actividadesList.appendChild(div);
@@ -184,15 +185,15 @@
                         const div = document.createElement('div');
                         div.className = 'bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300';
                         div.innerHTML = `
-                            <img src="${actividad.imagen || 'https://via.placeholder.com/400x250?text=Actividad'}" alt="${actividad.nombre_actividad}" class="w-full h-48 object-cover">
+                            <img src="${actividad.Imagen || 'https://via.placeholder.com/400x250?text=Actividad'}" alt="${actividad.Nombre_Actividad}" class="w-full h-48 object-cover">
                             <div class="p-6">
-                                <h3 class="text-2xl font-bold mb-2 text-gray-800">${actividad.nombre_actividad}</h3>
-                                <p class="text-gray-600 mb-4">${actividad.descripcion}</p>
+                                <h3 class="text-2xl font-bold mb-2 text-gray-800">${actividad.Nombre_Actividad}</h3>
+                                <p class="text-gray-600 mb-4">${actividad.Descripcion}</p>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-2xl font-bold text-blue-600">$${actividad.precio}</span>
-                                    <span class="text-sm text-gray-500">${actividad.ubicacion}</span>
+                                    <span class="text-2xl font-bold text-blue-600">$${actividad.Precio}</span>
+                                    <span class="text-sm text-gray-500">${actividad.Ubicacion}</span>
                                 </div>
-                                <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">Reservar Ahora</button>
+                                <button onclick="window.location.href='{{ route('search') }}'" class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">Ver Más</button>
                             </div>
                         `;
                         actividadesList.appendChild(div);
@@ -241,7 +242,7 @@
                                         <span class="text-2xl font-bold text-blue-600">$${actividad.precio}</span>
                                         <span class="text-sm text-gray-500">${actividad.ubicacion}</span>
                                     </div>
-                                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">Reservar Ahora</button>
+                                    <button onclick="window.location.href='{{ route('search') }}'" class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">Ver Más</button>
                                 </div>
                             `;
                             actividadesList.appendChild(div);

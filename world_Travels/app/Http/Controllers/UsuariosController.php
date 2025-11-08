@@ -17,23 +17,24 @@ class UsuariosController extends Controller
    public function store(Request $request)
    {
         $validator = Validator::make($request->all(),[
-        'Nombre'=> 'required|string',
-        'Apellido'=> 'required|string',
-        'Email'=> 'required|string',
-        'Contraseña'=> 'required|string',
-        'Telefono'=> 'required|string',
-        'Nacionalidad'=> 'required|string',
-        'Fecha_Registro'=> 'required|date',
-        'Rol'=> 'required|string',
+        'Nombre'=> 'required|string|max:255',
+        'Apellido'=> 'required|string|max:255',
+        'Email'=> 'required|string|email|max:255|unique:usuarios',
+        'Contraseña'=> 'required|string|min:8',
+        'Telefono'=> 'required|string|max:20',
+        'Nacionalidad'=> 'required|string|max:255',
+        'Rol'=> 'required|string|in:Turista,Guía Turístico,Administrador',
         ]);
 
-        if ($validator-> fails()) {
+        if ($validator->fails()) {
           return response()->json($validator->errors(), 422);
          }
 
-        $usuarios = Usuarios::create($validator->validated());
-        return response()->json($usuarios,201);  
-   } 
+        $data = $validator->validated();
+        $data['Contraseña'] = bcrypt($data['Contraseña']);
+        $usuarios = Usuarios::create($data);
+        return response()->json($usuarios,201);
+   }
 
      public function show(string $id)   
      {
@@ -55,14 +56,13 @@ class UsuariosController extends Controller
         }
 
          $validator = Validator::make($request->all(),[
-         'Nombre'=> 'string',
-         'Apellido'=> 'string',
-         'Email'=> 'string',
-         'Contraseña'=> 'string',
-         'Telefono'=> 'string',
-         'Nacionalidad'=> 'string',
-         'Fecha_Registro'=> 'date',
-         'Rol'=> 'string',
+         'Nombre'=> 'string|max:255',
+         'Apellido'=> 'string|max:255',
+         'Email'=> 'string|email|max:255|unique:usuarios,email,'.$id,
+         'Contraseña'=> 'string|min:8',
+         'Telefono'=> 'string|max:20',
+         'Nacionalidad'=> 'string|max:255',
+         'Rol'=> 'string|in:Turista,Guía Turístico,Administrador',
         ]);
         
 
@@ -70,7 +70,11 @@ class UsuariosController extends Controller
          return response()->json($validator->errors(), 422);
         }
 
-        $usuarios->update($validator->validated());
+        $data = $validator->validated();
+        if (isset($data['Contraseña'])) {
+            $data['Contraseña'] = bcrypt($data['Contraseña']);
+        }
+        $usuarios->update($data);
         return response()->json($usuarios); 
     }
 

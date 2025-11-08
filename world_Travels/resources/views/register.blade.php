@@ -85,7 +85,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, email, password, roles: 'usuarios' }),
+                body: JSON.stringify({ Nombre: name, Apellido: '', Email: email, Contraseña: password, Telefono: '', Nacionalidad: '', Rol: 'Turista' }),
             })
             .then(response => response.json())
             .then(data => {

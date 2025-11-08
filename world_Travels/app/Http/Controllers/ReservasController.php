@@ -20,10 +20,10 @@ class ReservasController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'idUsuario'        => 'required|integer|exists:usuarios,id',
-            'idActividad'      => 'required|integer|exists:actividad,id_actividad',
-            'fechaReserva'     => 'required|date',
-            'cantidadPersonas' => 'required|integer|min:1',
-            'estado'           => 'required|string|max:50',
+            'idActividad'      => 'required|integer|exists:actividades,id',
+            'Fecha_Reserva'    => 'required|date',
+            'Numero_Personas'  => 'required|integer|min:1',
+            'Estado'           => 'required|string|in:pendiente,confirmada,cancelada',
         ]);
 
         if ($validator->fails()) {
@@ -57,10 +57,10 @@ class ReservasController extends Controller
 
         $validator = Validator::make($request->all(), [
             'idUsuario'        => 'integer|exists:usuarios,id',
-            'idActividad'      => 'integer|exists:actividad,id_actividad',
-            'fechaReserva'     => 'date',
-            'cantidadPersonas' => 'integer|min:1',
-            'estado'           => 'string|max:50',
+            'idActividad'      => 'integer|exists:actividades,id',
+            'Fecha_Reserva'    => 'date',
+            'Numero_Personas'  => 'integer|min:1',
+            'Estado'           => 'string|in:pendiente,confirmada,cancelada',
         ]);
 
         if ($validator->fails()) {

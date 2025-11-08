@@ -8,18 +8,18 @@ class Actividades extends Model
 {
      protected $table = 'actividades';
      protected $fillable = [
-        'nombre_actividad',
-        'descripcion',
-        'fecha',
-        'hora',
-        'precio',
-        'cupo_maximo',
-        'ubicacion',
-        'imagen',
-        'idCategoria',
-        'idUsuario',
-        'idMunicipio'
-    ];
+          'Nombre_Actividad',
+          'Descripcion',
+          'Fecha_Actividad',
+          'Hora_Actividad',
+          'Precio',
+          'Cupo_Maximo',
+          'Ubicacion',
+          'Imagen',
+          'idCategoria',
+          'idUsuario',
+          'idMunicipio'
+      ];
 
     public function categoria()
     {

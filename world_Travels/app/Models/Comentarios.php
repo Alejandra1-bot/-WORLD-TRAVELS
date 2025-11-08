@@ -8,12 +8,12 @@ class Comentarios extends Model
 {
      protected $table = 'comentarios';
      protected $fillable = [
-        'comentario',
-        'calificacion',
-        'fecha_comentario',
-        'idUsuario',
-        'idActividad'
-    ];
+          'Contenido',
+          'Calificacion',
+          'Fecha_Comentario',
+          'idUsuario',
+          'idActividad'
+      ];
 
     public function usuario()
     {

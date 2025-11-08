@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Municipios extends Model
 {
      protected $table = 'municipios';
-     protected $fillable = [ 
-     'Nombre_Municipio',
-     'idDepartamento',
-    
-     ];
+     protected $fillable = [
+       'Nombre_Municipio',
+       'idDepartamento',
+ 
+       ];
 
     public function departamento()
     {

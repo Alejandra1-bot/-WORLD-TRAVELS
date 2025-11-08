@@ -17,12 +17,12 @@ class MunicipiosController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-        'Nombre'=> 'required|string',
-        'idDepartamento'=> 'required|integer',
-        
+        'Nombre_Municipio'=> 'required|string|max:255',
+        'idDepartamento'=> 'required|integer|exists:departamentos,id',
+
         ]);
 
-        if ($validator-> fails()) {
+        if ($validator->fails()) {
           return response()->json($validator->errors(), 422);
          }
 
@@ -50,9 +50,8 @@ class MunicipiosController extends Controller
         }
 
          $validator = Validator::make($request->all(),[
-         'Nombre'=> 'string',
-         'idDepartamento'=> 'integer',
-         'idActividad'=> 'integer',
+         'Nombre_Municipio'=> 'string|max:255',
+         'idDepartamento'=> 'integer|exists:departamentos,id',
         ]);
         
 

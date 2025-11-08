@@ -52,6 +52,7 @@
                 <a href="{{ route('home') }}" class="mr-4">Inicio</a>
                 <a href="{{ route('search') }}" class="mr-4">Buscar Actividades</a>
                 @auth
+                    <a href="{{ route('dashboard') }}" class="mr-4">Mi Dashboard</a>
                     <a href="{{ route('logout') }}">Cerrar Sesión</a>
                 @else
                     <a href="{{ route('login') }}" class="mr-4">Iniciar Sesión</a>
@@ -100,8 +101,9 @@
                 .then(response => response.json())
                 .then(data => {
                     const filtered = data.filter(activity =>
-                        activity.nombre_actividad.toLowerCase().includes(query.toLowerCase()) ||
-                        activity.descripcion.toLowerCase().includes(query.toLowerCase())
+                        activity.Nombre_Actividad.toLowerCase().includes(query.toLowerCase()) ||
+                        activity.Descripcion.toLowerCase().includes(query.toLowerCase()) ||
+                        activity.Ubicacion.toLowerCase().includes(query.toLowerCase())
                     );
                     displayActivities(filtered);
                 })
@@ -111,15 +113,24 @@
         function displayActivities(activities) {
             const results = document.getElementById('results');
             results.innerHTML = '';
+            if (activities.length === 0) {
+                results.innerHTML = '<p class="col-span-full text-center text-gray-500">No se encontraron actividades.</p>';
+                return;
+            }
             activities.forEach(activity => {
                 const div = document.createElement('div');
-                div.className = 'bg-white rounded shadow p-4';
+                div.className = 'bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300';
                 div.innerHTML = `
-                    <img src="${activity.imagen || 'https://via.placeholder.com/300x200?text=Actividad'}" alt="${activity.nombre_actividad}" class="w-full h-48 object-cover rounded mb-2">
-                    <h3 class="text-xl font-bold">${activity.nombre_actividad}</h3>
-                    <p>${activity.descripcion}</p>
-                    <p class="font-bold">Precio: $${activity.precio}</p>
-                    <p>Ubicación: ${activity.ubicacion}</p>
+                    <img src="${activity.Imagen || 'https://via.placeholder.com/400x250?text=Actividad'}" alt="${activity.Nombre_Actividad}" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-2 text-gray-800">${activity.Nombre_Actividad}</h3>
+                        <p class="text-gray-600 mb-4">${activity.Descripcion}</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-2xl font-bold text-blue-600">$${activity.Precio}</span>
+                            <span class="text-sm text-gray-500">${activity.Ubicacion}</span>
+                        </div>
+                        <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">Reservar Ahora</button>
+                    </div>
                 `;
                 results.appendChild(div);
             });

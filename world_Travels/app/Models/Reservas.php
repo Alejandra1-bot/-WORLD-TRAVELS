@@ -8,13 +8,13 @@ class Reservas extends Model
 {
      protected $table = 'reservas';
      protected $fillable = [
-     
-        'fecha_reserva',
-        'cantidad_personas',
-        'estado',
-        'idUsuario',
-        'idActividad'
-    ];
+ 
+          'Fecha_Reserva',
+          'Numero_Personas',
+          'Estado',
+          'idUsuario',
+          'idActividad'
+      ];
 
     public function usuario()
     {

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Categorias_Actividades;
 use Illuminate\Support\Facades\Validator;
 
-class CategoriasActividadesController extends Controller
+class Categorias_ActividadesController extends Controller
 {
     public function index()
     {
@@ -17,8 +17,8 @@ class CategoriasActividadesController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nombre_categoria' => 'required|string|max:255',
-            'descripcion'      => 'nullable|string',
+            'Nombre_Categoria' => 'required|string|max:255|unique:categorias__actividades',
+            'Descripcion'      => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -49,8 +49,8 @@ class CategoriasActividadesController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'nombre_categoria' => 'string|max:255',
-            'descripcion'      => 'nullable|string',
+            'Nombre_Categoria' => 'string|max:255|unique:categorias__actividades,nombre_categoria,'.$id,
+            'Descripcion'      => 'nullable|string',
         ]);
 
         if ($validator->fails()) {

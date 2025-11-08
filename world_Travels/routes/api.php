@@ -7,29 +7,29 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\DepartamentosController;
 use App\Http\Controllers\MunicipiosController;
-use App\Http\Controllers\CategoriasActividadesController;
+use App\Http\Controllers\Categorias_ActividadesController;
 use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReservasController;
 use App\Http\Controllers\ComentariosController;
-use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Container\Attributes\Auth;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-    Route::middleware('jwt.auth')->group(function (){});
+    // Route::middleware('jwt.auth')->group(function (){});
 
     Route::post('registrar', [AuthController::class, 'registrar']);
     Route::post('login', [AuthController::class, 'login']);
 
-    Route::group(['middleware' => ['jwt.auth']], function () {
+    Route::group(['middleware' => [JwtMiddleware::class]], function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
     });
 
-    Route::group(['middleware' =>RoleMiddleware::class.':admin'], function (){
+    Route::group(['middleware' => [JwtMiddleware::class . ':Administrador']], function () {
     Route::post('crearDepartamentos', [DepartamentosController::class, 'store']);
     Route::get('departamentos/{id}', [DepartamentosController::class, 'show']);
     Route::put('actualizarDepartamentos/{id}', [DepartamentosController::class, 'update']);
@@ -38,10 +38,10 @@ use Illuminate\Container\Attributes\Auth;
     Route::get('municipios/{id}', [MunicipiosController::class, 'show']);
     Route::put('actualizarMunicipios/{id}', [MunicipiosController::class, 'update']);
     Route::delete('eliminarMunicipios/{id}', [MunicipiosController::class, 'destroy']);
-    Route::post('crearCategorias', [CategoriasActividadesController::class, 'store']);
-    Route::get('categorias/{id}', [CategoriasActividadesController::class, 'show']);
-    Route::put('actualizarCategorias/{id}', [CategoriasActividadesController::class, 'update']);
-    Route::delete('eliminarCategorias/{id}', [CategoriasActividadesController::class, 'destroy']);
+    Route::post('crearCategorias', [Categorias_ActividadesController::class, 'store']);
+    Route::get('categorias/{id}', [Categorias_ActividadesController::class, 'show']);
+    Route::put('actualizarCategorias/{id}', [Categorias_ActividadesController::class, 'update']);
+    Route::delete('eliminarCategorias/{id}', [Categorias_ActividadesController::class, 'destroy']);
     Route::post('crearActividades', [ActividadesController::class, 'store']);
     Route::get('actividades/{id}', [ActividadesController::class, 'show']);
     Route::put('actualizarActividades/{id}', [ActividadesController::class, 'update']);
@@ -74,7 +74,7 @@ Route::get('listarMunicipios', [MunicipiosController::class, 'index']);
 // Route::delete('eliminarMunicipios/{id}', [MunicipiosController::class, 'destroy']);
 
 // Rutas para Categorías de Actividades
-Route::get('listarCategorias', [CategoriasActividadesController::class, 'index']);
+Route::get('listarCategorias', [Categorias_ActividadesController::class, 'index']);
 // Route::post('crearCategorias', [CategoriasActividadesController::class, 'store']);
 // Route::get('categorias/{id}', [CategoriasActividadesController::class, 'show']);
 // Route::put('actualizarCategorias/{id}', [CategoriasActividadesController::class, 'update']);

@@ -17,17 +17,17 @@ class ActividadesController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'idCategoria'  => 'required|integer',
-            'idUsuario'    => 'required|integer',
-            'idMunicipio'  => 'required|integer',
-            'titulo'       => 'required|string|max:255',
-            'descripcion'  => 'required|string',
-            'fecha'        => 'required|date',
-            'hora'         => 'required',
-            'precio'       => 'required|numeric|min:0',
-            'cupoMaximo'   => 'required|integer|min:1',
-            'ubicacion'    => 'required|string|max:255',
-            'imagen'       => 'nullable|string'
+            'idCategoria'  => 'required|integer|exists:categorias__actividades,id',
+            'idUsuario'    => 'required|integer|exists:usuarios,id',
+            'idMunicipio'  => 'required|integer|exists:municipios,id',
+            'Nombre_Actividad' => 'required|string|max:255',
+            'Descripcion'  => 'required|string',
+            'Fecha_Actividad' => 'required|date',
+            'Hora_Actividad' => 'required|date_format:H:i',
+            'Precio'       => 'required|numeric|min:0',
+            'Cupo_Maximo'  => 'required|integer|min:1',
+            'Ubicacion'    => 'required|string|max:255',
+            'Imagen'       => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -58,17 +58,17 @@ class ActividadesController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'idCategoria'  => 'integer',
-            'idUsuario'    => 'integer',
-            'idMunicipio'  => 'integer',
-            'titulo'       => 'string|max:255',
-            'descripcion'  => 'string',
-            'fecha'        => 'date',
-            'hora'         => '',
-            'precio'       => 'numeric|min:0',
-            'cupoMaximo'   => 'integer|min:1',
-            'ubicacion'    => 'string|max:255',
-            'imagen'       => 'nullable|string'
+            'idCategoria'  => 'integer|exists:categorias__actividades,id',
+            'idUsuario'    => 'integer|exists:usuarios,id',
+            'idMunicipio'  => 'integer|exists:municipios,id',
+            'Nombre_Actividad' => 'string|max:255',
+            'Descripcion'  => 'string',
+            'Fecha_Actividad' => 'date',
+            'Hora_Actividad' => 'date_format:H:i',
+            'Precio'       => 'numeric|min:0',
+            'Cupo_Maximo'  => 'integer|min:1',
+            'Ubicacion'    => 'string|max:255',
+            'Imagen'       => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
