@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Categorias_Actividades;
 use Illuminate\Support\Facades\Validator;
 
-class CategoriasActividadesController extends Controller
+class Categorias_ActividadesController extends Controller
 {
     /**
      * Listar todas las categorías de actividades

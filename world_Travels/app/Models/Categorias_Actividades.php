@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Categorias_Actividades extends Model
 {
     // Nombre de la tabla en la base de datos
-    protected $table = 'categorias_actividades';
+    protected $table = 'categorias__actividades';
 
     // Campos que se pueden asignar de manera masiva (mass assignment)
     protected $fillable = [
-        'nombre_categoria', // Nombre de la categoría
-        'descripcion'       // Descripción de la categoría
+        'Nombre_Categoria', // Nombre de la categoría
+        'Descripcion'       // Descripción de la categoría
     ];
 }

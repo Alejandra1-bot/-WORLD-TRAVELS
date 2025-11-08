@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categorias_actividades', function (Blueprint $table) {
-            $table->id();
-            $table->string('Nombre_Categoria');
-            $table->string('Descripcion');
-            $table->timestamps();
+        Schema::table('usuarios', function (Blueprint $table) {
+            $table->dropColumn('Rol');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categorias__actividades');
+        Schema::table('usuarios', function (Blueprint $table) {
+            $table->enum('Rol', ['administrador', 'cliente', 'organizador'])->default('cliente');
+        });
     }
 };

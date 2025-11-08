@@ -1,0 +1,38 @@
+{
+    "name": "worldtravels/world_travels",
+    "description": "Proyecto World Travels en Laravel",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "doctrine/dbal": "^4.3",
+        "laravel/framework": "^12.35",
+        "laravel/sanctum": "^4.2",
+        "laravel/tinker": "^2.10",
+        "tymon/jwt-auth": "^2.2"
+    },
+    "require-dev": {
+        "laravel/pail": "^1.2",
+        "laravel/sail": "^1.47",
+        "nunomaduro/collision": "^8.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan package:discover --ansi"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "prefer-stable": true
+}

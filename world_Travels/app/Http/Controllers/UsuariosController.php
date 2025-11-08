@@ -54,16 +54,31 @@ class UsuariosController extends Controller
             'Nombre'         => 'required|string',
             'Apellido'       => 'required|string',
             'Email'          => 'required|string',
-            'Contraseña'     => 'required|string',
+            'password'       => 'required|string',
             'Telefono'       => 'required|string',
             'Nacionalidad'   => 'required|string',
             'Fecha_Registro' => 'required|date',
-            'Rol'            => 'required|string',
+
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
+
+         $data = $validator->validated();
+         $data['password'] = Hash::make($data['password']);
+
+         // Crear usuario en tabla users
+         $user = User::create([
+             'name' => $data['Nombre'],
+             'apellido' => $data['Apellido'],
+             'telefono' => $data['Telefono'],
+             'email' => $data['Email'],
+             'nacionalidad' => $data['Nacionalidad'],
+             'password' => $data['password'],
+             'rol' => 'Usuario',
+         ]);
+
 
         $usuarios = Usuarios::create($validator->validated());
         return response()->json($usuarios,201);  
@@ -115,15 +130,19 @@ class UsuariosController extends Controller
             'Nombre'         => 'string',
             'Apellido'       => 'string',
             'Email'          => 'string',
-            'Contraseña'     => 'string',
+            'password'       => 'string',
             'Telefono'       => 'string',
             'Nacionalidad'   => 'string',
             'Fecha_Registro' => 'date',
-            'Rol'            => 'string',
+
         ]);
         
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
+        }
+         $data = $validator->validated();
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
         }
 
         $usuarios->update($validator->validated());
