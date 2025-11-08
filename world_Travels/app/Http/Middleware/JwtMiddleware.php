@@ -17,13 +17,13 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, string $roles): Response
     {
         try{
-            $user = JWTAuth::parseToken()->authenticate(); // para saber si esta autenticado el usuario 
+            $usuarios = JWTAuth::parseToken()->authenticate(); // para saber si esta autenticado el usuario 
         }catch(\Exception $e){
             // si no hay token valido o esta vencido, devolvemos error
             return response()->json(['error' => 'Token invalido o expirado'], 401);
         }
 
-        if ($user ->roles !== $roles) {
+        if ($usuarios ->roles !== $roles) {
             return response()->json(['error' => 'Acceso denegado. No tienes el rol necesario'], 403);
         }
 

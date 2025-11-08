@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 
 class Usuarios extends Model
 {
@@ -18,12 +19,27 @@ class Usuarios extends Model
         'Nombre',          // Nombre del usuario
         'Apellido',        // Apellido del usuario
         'Email',           // Correo electrónico
-        'Contraseña',      // Contraseña (⚠️ recomendable cambiar a "password" sin tilde)
+        'password',        // Contraseña
         'Telefono',        // Número de teléfono
         'Nacionalidad',    // País de origen
         'Fecha_Registro',  // Fecha en que se registró el usuario
-        'Rol'              // Rol dentro del sistema (ej: admin, cliente)
+
     ];
+
+    /**
+     * Campos que deben estar ocultos en las respuestas JSON.
+     */
+    protected $hidden = [
+        'password',
+    ];
+
+    /**
+     * Mutator para encriptar automáticamente la contraseña.
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
 
     /**
      * Relación con Reservas

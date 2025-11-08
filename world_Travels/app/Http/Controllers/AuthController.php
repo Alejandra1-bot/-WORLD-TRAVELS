@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -14,10 +14,10 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:usuarios',
             'password' => 'required|string|min:8',
             'email_verified_at' => 'nullable|date',
-            'roles'=>'required|string|in:admin,user' // rol puede ser admin o user
+            'roles'=>'required|string|in:admin,usuarios' // rol puede ser admin o usuarios
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -25,7 +25,7 @@ class AuthController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-        $user = User::create([
+        $usuarios = Usuarios::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password), // hash hace que la contraseña no se vea en texto plano
@@ -33,10 +33,10 @@ class AuthController extends Controller
         ]);
 
         try{
-            $token = JWTAuth::fromUser($user);  
+            $token = JWTAuth::fromUsuarios($usuarios);  
             return response()->json([
             'success' => true,
-            'user' => $user,
+            'Usuarios' => $usuarios,
             'token' => $token,      
             ], 201);   
         } catch (\Exception $e) {
@@ -76,11 +76,11 @@ class AuthController extends Controller
 
     public function logout(){
         try{
-            $user = JWTAuth::user(); // validar el usuario logeado
+            $usuarios = JWTAuth::usuarios(); // validar el usuario logeado
             JWTAuth::invalidate(JWTAuth::getToken()); // invalidar el token
             return response()->json([
                 'success' => true,
-                'message' => $user->name.' ha cerrado sesion correctamente',
+                'message' => $usuarios->name.' ha cerrado sesion correctamente',
             ], 200);
         }catch(\Exception $e){
             return response()->json([
@@ -95,7 +95,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'success' => true,
-            'user' => JWTAuth::user(),
+            'usuarios' => JWTAuth::usuarios(),
         ], 200);
     }
     
