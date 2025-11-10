@@ -12,6 +12,8 @@ use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReservasController;
 use App\Http\Controllers\ComentariosController;
+use App\Http\Controllers\AdministradorController;
+use App\Http\Controllers\EmpresaController;
 use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Container\Attributes\Auth;
 
@@ -23,6 +25,15 @@ use Illuminate\Container\Attributes\Auth;
 
     Route::post('registrar', [AuthController::class, 'registrar']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('enviar-codigo-verificacion', [AuthController::class, 'enviarCodigoVerificacion']);
+
+    // Rutas para Administradores
+    Route::post('administradores/login', [AdministradorController::class, 'login']);
+    Route::post('administradores/registrar', [AdministradorController::class, 'store']);
+
+    // Rutas para Empresas
+    Route::post('empresas/login', [EmpresaController::class, 'login']);
+    Route::post('empresas/registrar', [EmpresaController::class, 'store']);
 
     Route::group(['middleware' => [JwtMiddleware::class]], function () {
         Route::post('logout', [AuthController::class, 'logout']);
@@ -100,3 +111,22 @@ Route::post('crearComentarios', [ComentariosController::class, 'store']);
 Route::get('comentarios/{id}', [ComentariosController::class, 'show']);
 Route::put('actualizarComentarios/{id}', [ComentariosController::class, 'update']);
 Route::delete('eliminarComentarios/{id}', [ComentariosController::class, 'destroy']);
+
+// Rutas protegidas para Administradores
+Route::group(['middleware' => [JwtMiddleware::class]], function () {
+    // CRUD Administradores
+    Route::get('administradores', [AdministradorController::class, 'index']);
+    Route::get('administradores/{id}', [AdministradorController::class, 'show']);
+    Route::put('administradores/{id}', [AdministradorController::class, 'update']);
+    Route::delete('administradores/{id}', [AdministradorController::class, 'destroy']);
+    Route::post('administradores/logout', [AdministradorController::class, 'logout']);
+    Route::get('administradores/me', [AdministradorController::class, 'me']);
+
+    // CRUD Empresas
+    Route::get('empresas', [EmpresaController::class, 'index']);
+    Route::get('empresas/{id}', [EmpresaController::class, 'show']);
+    Route::put('empresas/{id}', [EmpresaController::class, 'update']);
+    Route::delete('empresas/{id}', [EmpresaController::class, 'destroy']);
+    Route::post('empresas/logout', [EmpresaController::class, 'logout']);
+    Route::get('empresas/me', [EmpresaController::class, 'me']);
+});

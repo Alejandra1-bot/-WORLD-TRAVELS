@@ -283,7 +283,28 @@ return [
         |
         */
 
-        'auth' => Tymon\JWTAuth\Providers\Auth\Illuminate::class,
+        'auth' => 'Tymon\JWTAuth\Providers\Auth\Illuminate',
+
+        /*
+        |--------------------------------------------------------------------------
+        | User Provider
+        |--------------------------------------------------------------------------
+        |
+        | Specify the user provider that is used to authenticate users.
+        |
+        */
+
+        'user' => [
+            'provider' => 'usuarios',
+        ],
+
+        'administrador' => [
+            'provider' => 'administradores',
+        ],
+
+        'empresa' => [
+            'provider' => 'empresas',
+        ],
 
         /*
         |--------------------------------------------------------------------------
