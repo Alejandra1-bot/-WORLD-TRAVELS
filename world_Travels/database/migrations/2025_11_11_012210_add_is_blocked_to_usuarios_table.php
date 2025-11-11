@@ -6,21 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::table('usuarios', function (Blueprint $table) {
-            if (Schema::hasColumn('usuarios', 'Contrasena')) {
-                $table->renameColumn('Contrasena', 'password');
-            }
+            $table->boolean('is_blocked')->default(false);
         });
     }
-    
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::table('usuarios', function (Blueprint $table) {
-            $table->renameColumn('password', 'Contrasena');
+            $table->dropColumn('is_blocked');
         });
     }
 };
-

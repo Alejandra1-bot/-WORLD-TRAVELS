@@ -16,5 +16,7 @@ class Empresa extends Model
         'nit',
         'direccion',
         'ciudad',
+        'email',
+        'contraseña',
     ];
 }
