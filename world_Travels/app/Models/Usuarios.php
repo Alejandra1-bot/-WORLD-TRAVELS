@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Usuarios extends Model
+class Usuarios extends Model implements JWTSubject
 {
     /**
      * Nombre de la tabla asociada en la base de datos
@@ -16,29 +17,39 @@ class Usuarios extends Model
      * Campos que se pueden asignar de manera masiva (mass assignment).
      */
     protected $fillable = [
-        'Nombre',          // Nombre del usuario
-        'Apellido',        // Apellido del usuario
-        'Email',           // Correo electrónico
-        'password',        // Contraseña
-        'Telefono',        // Número de teléfono
-        'Nacionalidad',    // País de origen
-        'Fecha_Registro',  // Fecha en que se registró el usuario
-
+        'Nombre',
+        'Apellido',
+        'Email',
+        'Contraseña',
+        'Telefono',
+        'Nacionalidad',
+        'Fecha_Registro',
+        'Rol',
+        'is_blocked'
     ];
 
-    /**
-     * Campos que deben estar ocultos en las respuestas JSON.
-     */
     protected $hidden = [
-        'password',
+        'Contraseña',
+        'remember_token',
     ];
+
+    // Métodos requeridos por JWT
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     /**
      * Mutator para encriptar automáticamente la contraseña.
      */
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = Hash::make($value);
+        $this->attributes['Contraseña'] = Hash::make($value);
     }
 
     /**

@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('Telefono');
             $table->string('Nacionalidad');
             $table->date('Fecha_Registro')->default(now());
-            $table->enum('Rol', ['administrador', 'cliente', 'organizador'])->default('cliente');
+            $table->enum('Rol', ['Turista', 'Guía Turístico', 'Administrador'])->default('Turista');
+            $table->rememberToken();
             $table->timestamps();
         });
     }

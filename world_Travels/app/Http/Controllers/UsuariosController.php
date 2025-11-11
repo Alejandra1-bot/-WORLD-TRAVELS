@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Usuarios;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * ---------------------------------------------------------
@@ -54,7 +56,7 @@ class UsuariosController extends Controller
             'Nombre'         => 'required|string',
             'Apellido'       => 'required|string',
             'Email'          => 'required|string',
-            'password'       => 'required|string',
+            'Contrasena'     => 'required|string|min:8',
             'Telefono'       => 'required|string',
             'Nacionalidad'   => 'required|string',
             'Fecha_Registro' => 'required|date',
@@ -66,21 +68,25 @@ class UsuariosController extends Controller
         }
 
          $data = $validator->validated();
-         $data['password'] = Hash::make($data['password']);
+         $data['Contraseña'] = Hash::make($data['Contrasena']);
 
          // Crear usuario en tabla users
          $user = User::create([
-             'name' => $data['Nombre'],
-             'apellido' => $data['Apellido'],
-             'telefono' => $data['Telefono'],
+             'name' => $data['Nombre'] . ' ' . $data['Apellido'],
              'email' => $data['Email'],
-             'nacionalidad' => $data['Nacionalidad'],
-             'password' => $data['password'],
-             'rol' => 'Usuario',
+             'password' => $data['Contraseña'],
+             'role' => 'usuario',
          ]);
 
-
-        $usuarios = Usuarios::create($validator->validated());
+        $usuarios = Usuarios::create([
+            'Nombre' => $data['Nombre'],
+            'Apellido' => $data['Apellido'],
+            'Email' => $data['Email'],
+            'Contraseña' => $data['Contraseña'],
+            'Telefono' => $data['Telefono'],
+            'Nacionalidad' => $data['Nacionalidad'],
+            'Fecha_Registro' => $data['Fecha_Registro'],
+        ]);
         return response()->json($usuarios,201);  
     } 
 
@@ -122,31 +128,61 @@ class UsuariosController extends Controller
     {
         $usuarios = Usuarios::find($id);
 
-        if (!$usuarios) { 
+        if (!$usuarios) {
             return response()->json(['menssage'=> 'Usuario no encontrado para editar'], 404);
         }
 
         $validator = Validator::make($request->all(),[
-            'Nombre'         => 'string',
-            'Apellido'       => 'string',
-            'Email'          => 'string',
-            'password'       => 'string',
-            'Telefono'       => 'string',
-            'Nacionalidad'   => 'string',
-            'Fecha_Registro' => 'date',
-
+            'Nombre' => 'string|max:255',
+            'Apellido' => 'string|max:255',
+            'Email' => 'string|email|max:255|unique:usuarios,email,'.$id,
+            'Contrasena' => 'string|min:8',
+            'Telefono' => 'string|max:20',
+            'Nacionalidad' => 'string|max:255',
+            'Rol' => 'string|in:Turista,Guía Turístico,Administrador',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-         $data = $validator->validated();
-        if (isset($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
+
+        $oldEmail = $usuarios->Email;
+        $oldNombre = $usuarios->Nombre;
+        $oldApellido = $usuarios->Apellido;
+
+        $data = $validator->validated();
+        if (isset($data['Contrasena'])) {
+            $data['Contraseña'] = Hash::make($data['Contrasena']);
+            unset($data['Contrasena']);
         }
 
-        $usuarios->update($validator->validated());
-        return response()->json($usuarios); 
+        $usuarios->update($data);
+
+        // Actualizar también en tabla users
+        $user = User::where('email', $oldEmail)->first();
+        if ($user) {
+            $userData = [];
+            if (isset($data['Nombre']) || isset($data['Apellido'])) {
+                $userData['name'] = ($data['Nombre'] ?? $oldNombre) . ' ' . ($data['Apellido'] ?? $oldApellido);
+            }
+            if (isset($data['Contraseña'])) {
+                $userData['password'] = $data['Contraseña'];
+            }
+            // Para email, verificar que no exista otro con el mismo email
+            if (isset($data['Email'])) {
+                $newEmail = $data['Email'];
+                $existing = User::where('email', $newEmail)->where('id', '!=', $user->id)->exists();
+                if (!$existing) {
+                    $userData['email'] = $newEmail;
+                }
+            }
+
+            if (!empty($userData)) {
+                $user->update($userData);
+            }
+        }
+
+        return response()->json($usuarios);
     }
 
     /**
@@ -164,11 +200,50 @@ class UsuariosController extends Controller
     {
         $usuarios = Usuarios::find($id);
 
-        if (!$usuarios) { 
+        if (!$usuarios) {
             return response()->json(['menssage'=> 'Usuario no encontrado para eliminar'], 404);
         }
 
+        // Eliminar también de tabla users
+        $user = User::where('email', $usuarios->Email)->first();
+        if ($user) {
+            $user->delete();
+        }
+
         $usuarios->delete();
-        return response()->json(['message' => 'Usuario eliminado con éxito']); 
-    } 
+        return response()->json(['message' => 'Usuario eliminado con éxito']);
+    }
+
+    /**
+     * -----------------------------------------------------
+     * Método: bloquear(string $id)
+     * -----------------------------------------------------
+     * Función: Bloquear o desbloquear un usuario.
+     * Flujo:
+     * - Busca el usuario por ID.
+     * - Si no existe → responde con error 404.
+     * - Cambia el estado de is_blocked.
+     * - Actualiza también en tabla users.
+     * - Retorna mensaje de confirmación.
+     */
+    public function bloquear(string $id)
+    {
+        $usuarios = Usuarios::find($id);
+
+        if (!$usuarios) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
+        $nuevoEstado = !$usuarios->is_blocked;
+        $usuarios->update(['is_blocked' => $nuevoEstado]);
+
+        // Actualizar también en tabla users
+        $user = User::where('email', $usuarios->Email)->first();
+        if ($user) {
+            $user->update(['is_blocked' => $nuevoEstado]);
+        }
+
+        $accion = $nuevoEstado ? 'bloqueado' : 'desbloqueado';
+        return response()->json(['message' => "Usuario {$accion} con éxito"]);
+    }
 }

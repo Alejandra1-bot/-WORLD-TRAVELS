@@ -1,61 +1,237 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# WORLD TRAVELS - Aplicación Web de Turismo en Boyacá
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Una aplicación web completa para la gestión de actividades turísticas en el departamento de Boyacá, Colombia. Desarrollada con Laravel 11, JWT para autenticación, y un sistema de roles robusto.
 
-## About Laravel
+## 🚀 Características Principales
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Sistema de Autenticación y Roles
+- **Turista**: Puede explorar actividades, hacer reservas y dejar reseñas
+- **Guía Turístico**: Puede crear y gestionar sus propias actividades turísticas
+- **Administrador**: Control total del sistema, gestión de usuarios y contenido
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Funcionalidades
+- ✅ Registro e inicio de sesión seguro con JWT
+- ✅ Gestión completa de actividades turísticas
+- ✅ Sistema de reservas y calificaciones
+- ✅ Dashboard personalizado por rol
+- ✅ Interfaz responsiva y moderna
+- ✅ API REST completa
+- ✅ Validaciones de datos robustas
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠️ Tecnologías Utilizadas
 
-## Learning Laravel
+- **Backend**: Laravel 11 (PHP 8.2+)
+- **Base de Datos**: MySQL
+- **Autenticación**: JWT (JSON Web Tokens)
+- **Frontend**: Blade Templates + JavaScript
+- **Estilos**: Tailwind CSS
+- **Arquitectura**: MVC con API REST
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📋 Requisitos del Sistema
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- PHP 8.2 o superior
+- Composer
+- MySQL 8.0+
+- Node.js y npm (para assets)
+- XAMPP o similar (para desarrollo local)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Instalación y Configuración
 
-## Laravel Sponsors
+### 1. Clonar el repositorio
+```bash
+git clone <url-del-repositorio>
+cd world-travels
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. Instalar dependencias de PHP
+```bash
+composer install
+```
 
-### Premium Partners
+### 3. Instalar dependencias de Node.js
+```bash
+npm install
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 4. Configurar el archivo .env
+```bash
+cp .env.example .env
+```
 
-## Contributing
+Editar el archivo `.env` con la configuración de tu base de datos:
+```env
+APP_NAME="WORLD TRAVELS"
+APP_ENV=local
+APP_KEY=base64:tu-app-key-aqui
+APP_DEBUG=true
+APP_URL=http://localhost:8000
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=world_travels
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_contraseña
 
-## Code of Conduct
+JWT_SECRET=tu-jwt-secret-aqui
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 5. Generar clave de aplicación
+```bash
+php artisan key:generate
+```
 
-## Security Vulnerabilities
+### 6. Ejecutar migraciones y seeders
+```bash
+php artisan migrate:fresh --seed
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 7. Compilar assets (opcional para desarrollo)
+```bash
+npm run build
+# o para desarrollo con hot reload
+npm run dev
+```
 
-## License
+### 8. Iniciar el servidor
+```bash
+php artisan serve
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+La aplicación estará disponible en: `http://localhost:8000`
+
+## 📊 Estructura de la Base de Datos
+
+### Tablas Principales
+- `usuarios` - Usuarios del sistema con roles
+- `departamentos` - Departamentos de Colombia
+- `municipios` - Municipios pertenecientes a departamentos
+- `categorias__actividades` - Categorías de actividades turísticas
+- `actividades` - Actividades turísticas disponibles
+- `reservas` - Reservas realizadas por usuarios
+- `comentarios` - Comentarios y calificaciones de actividades
+
+### Roles del Sistema
+1. **Turista** - Usuario final que consume servicios
+2. **Guía Turístico** - Usuario que crea y gestiona actividades
+3. **Administrador** - Usuario con control total del sistema
+
+## 🔐 API Endpoints
+
+### Autenticación
+- `POST /api/registrar` - Registro de usuario
+- `POST /api/login` - Inicio de sesión
+- `POST /api/logout` - Cierre de sesión
+- `GET /api/me` - Información del usuario autenticado
+
+### Gestión de Usuarios (Admin)
+- `GET /api/listarUsuarios` - Listar todos los usuarios
+- `POST /api/crearUsuarios` - Crear usuario
+- `GET /api/usuarios/{id}` - Obtener usuario específico
+- `PUT /api/actualizarUsuarios/{id}` - Actualizar usuario
+- `DELETE /api/eliminarUsuarios/{id}` - Eliminar usuario
+
+### Actividades
+- `GET /api/listarActividades` - Listar todas las actividades
+- `POST /api/crearActividades` - Crear actividad (Guía/Admin)
+- `GET /api/actividades/{id}` - Obtener actividad específica
+- `PUT /api/actualizarActividades/{id}` - Actualizar actividad
+- `DELETE /api/eliminarActividades/{id}` - Eliminar actividad
+
+### Reservas
+- `GET /api/listarReservas` - Listar todas las reservas
+- `POST /api/crearReservas` - Crear reserva
+- `GET /api/reservas/{id}` - Obtener reserva específica
+- `PUT /api/actualizarReservas/{id}` - Actualizar reserva
+- `DELETE /api/eliminarReservas/{id}` - Eliminar reserva
+
+### Comentarios
+- `GET /api/listarComentarios` - Listar todos los comentarios
+- `POST /api/crearComentarios` - Crear comentario
+- `GET /api/comentarios/{id}` - Obtener comentario específico
+- `PUT /api/actualizarComentarios/{id}` - Actualizar comentario
+- `DELETE /api/eliminarComentarios/{id}` - Eliminar comentario
+
+## 🎨 Interfaz de Usuario
+
+### Páginas Disponibles
+- **Inicio** (`/`) - Página principal con actividades destacadas
+- **Buscar Actividades** (`/search`) - Búsqueda y filtrado de actividades
+- **Iniciar Sesión** (`/login`) - Autenticación de usuarios
+- **Registro** (`/register`) - Registro de nuevos usuarios
+- **Dashboard** (`/dashboard`) - Panel de control personalizado por rol
+
+### Diseño Responsivo
+- Compatible con dispositivos móviles, tablets y desktop
+- Diseño moderno con Tailwind CSS
+- Elementos visuales inspirados en viajes y turismo
+
+## 🔒 Seguridad
+
+- **Encriptación de contraseñas** con bcrypt
+- **Autenticación JWT** para APIs
+- **Validaciones** robustas en todos los formularios
+- **Protección CSRF** en formularios web
+- **Middleware de roles** para control de acceso
+- **Validaciones de entrada** para prevenir inyección SQL
+
+## 🧪 Pruebas
+
+### Ejecutar pruebas
+```bash
+php artisan test
+```
+
+### Pruebas incluidas
+- Pruebas unitarias de modelos
+- Pruebas de integración de API
+- Pruebas de autenticación
+- Pruebas de validaciones
+
+## 📈 Despliegue
+
+### Requisitos para producción
+- Servidor web (Apache/Nginx)
+- PHP 8.2+
+- MySQL 8.0+
+- SSL Certificate (recomendado)
+
+### Pasos de despliegue
+1. Configurar variables de entorno para producción
+2. Ejecutar migraciones en el servidor
+3. Configurar permisos de archivos
+4. Configurar SSL
+5. Optimizar assets para producción
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -am 'Agrega nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 📞 Soporte
+
+Para soporte técnico o preguntas:
+- Crear un issue en el repositorio
+- Contactar al equipo de desarrollo
+
+## 🔄 Próximas Funcionalidades
+
+- [ ] Notificaciones en tiempo real con WebSockets
+- [ ] Sistema de pagos integrado
+- [ ] Mapas interactivos con Google Maps
+- [ ] Galería de fotos para actividades
+- [ ] Sistema de recomendaciones basado en IA
+- [ ] API móvil para aplicaciones nativas
+- [ ] Integración con redes sociales
+- [ ] Sistema de cupones y descuentos
+
+---
+
+**Desarrollado con ❤️ para promover el turismo en Boyacá, Colombia**

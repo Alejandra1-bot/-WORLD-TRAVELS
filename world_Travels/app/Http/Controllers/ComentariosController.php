@@ -29,10 +29,11 @@ class ComentariosController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'idUsuario'       => 'required|integer',
-            'idActividad'     => 'required|integer',
-            'contenido'       => 'required|string',
-            'fechaComentario' => 'required|date'
+            'idUsuario'       => 'required|integer|exists:usuarios,id',
+            'idActividad'     => 'required|integer|exists:actividades,id',
+            'Contenido'       => 'required|string',
+            'Calificacion'    => 'required|integer|min:1|max:5',
+            'Fecha_Comentario' => 'required|date'
         ]);
 
         if ($validator->fails()) {
@@ -77,10 +78,11 @@ class ComentariosController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'idUsuario'       => 'integer',
-            'idActividad'     => 'integer',
-            'contenido'       => 'string',
-            'fechaComentario' => 'date'
+            'idUsuario'       => 'integer|exists:usuarios,id',
+            'idActividad'     => 'integer|exists:actividades,id',
+            'Contenido'       => 'string',
+            'Calificacion'    => 'integer|min:1|max:5',
+            'Fecha_Comentario' => 'date'
         ]);
 
         if ($validator->fails()) {
