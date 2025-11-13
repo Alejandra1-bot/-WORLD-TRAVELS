@@ -65,12 +65,12 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            fetch('/api/login', {
+            fetch('http://127.0.0.1:8000/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ Email: email, Contraseña: password }),
             })
             .then(response => response.json())
             .then(data => {
@@ -78,11 +78,20 @@
                     localStorage.setItem('token', data.token);
                     window.location.href = '{{ route("dashboard") }}';
                 } else {
-                    document.getElementById('message').innerText = 'Credenciales inválidas';
+                    let errorMessage = 'Credenciales inválidas';
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors) {
+                        const errors = Object.values(data.errors).flat();
+                        errorMessage = errors.join('\n');
+                    }
+                    alert(errorMessage);
+                    document.getElementById('message').innerText = errorMessage;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
+                alert('Error al iniciar sesión. Revisa la consola para más detalles.');
                 document.getElementById('message').innerText = 'Error al iniciar sesión';
             });
         });

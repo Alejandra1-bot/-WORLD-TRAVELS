@@ -25,12 +25,14 @@ class Usuarios extends Model implements JWTSubject
         'Nacionalidad',
         'Fecha_Registro',
         'Rol',
-        'is_blocked'
+        'is_blocked',
+
     ];
 
     protected $hidden = [
         'Contraseña',
         'remember_token',
+        'codigo_verificacion',
     ];
 
     // Métodos requeridos por JWT
@@ -77,5 +79,23 @@ class Usuarios extends Model implements JWTSubject
     public function comentarios()
     {
         return $this->hasMany(Comentarios::class, 'idUsuario');
+    }
+
+    // Método para obtener la contraseña (necesario para JWT)
+    public function getAuthPassword()
+    {
+        return $this->Contraseña;
+    }
+
+    // Método para obtener el identificador de autenticación
+    public function getAuthIdentifierName()
+    {
+        return 'id';
+    }
+
+    // Método para obtener el identificador de autenticación
+    public function getAuthIdentifier()
+    {
+        return $this->getKey();
     }
 }

@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Mail\CodigoVerificacionMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -34,6 +37,7 @@ class AuthController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+ 
         // Crear usuario base
         $user = User::create([
             'name' => $request->Nombre ? $request->Nombre . ' ' . $request->Apellido : $request->NombreEmpresa,
@@ -43,6 +47,33 @@ class AuthController extends Controller
             'nit' => $request->roles === 'empresa' ? $request->NitEmpresa : null,
             'direccion' => $request->roles === 'empresa' ? $request->DireccionEmpresa : null,
             'ciudad' => $request->roles === 'empresa' ? $request->CiudadEmpresa : null,
+        ]);
+       
+
+        //     $usuarioExistente = Usuarios::where('Email', $request->Email)->first();
+        //     if (!$usuarioExistente || !$usuarioExistente->codigo_verificacion) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'Debes solicitar un código de verificación primero',
+        //         ], 422);
+        //     }
+        //     if ($request->codigo_verificacion !== $usuarioExistente->codigo_verificacion) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'Código de verificación incorrecto',
+        //         ], 422);
+        //     }
+        // }
+
+        $usuarios = Usuarios::create([
+            'Nombre' => $request->Nombre,
+            'Apellido' => $request->Apellido,
+            'Email' => $request->Email,
+            'Contraseña' => Hash::make($request->Contraseña),
+            'Telefono' => $request->Telefono,
+            'Nacionalidad' => $request->Nacionalidad,
+            'Rol' => $request->Rol,
+            'codigo_verificacion' => null, // Limpiar después del registro
         ]);
 
         $userId = $user->id;
@@ -92,7 +123,7 @@ class AuthController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
-    } 
+    }
 
     public function login(Request $request)
     {
@@ -159,7 +190,51 @@ class AuthController extends Controller
             'usuario' => JWTAuth::user(),
         ], 200);
     }
-    
+
+    public function enviarCodigoVerificacion(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'Email' => 'required|string|email|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $codigo = $this->generarCodigoVerificacion($request->Email);
+
+        try {
+            Mail::to($request->Email)->send(new CodigoVerificacionMail($codigo));
+            return response()->json([
+                'success' => true,
+                'message' => 'Código de verificación enviado al correo electrónico',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al enviar el código de verificación',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function generarCodigoVerificacion($email)
+    {
+        // Generar un código de 6 caracteres alfanuméricos
+        $codigo = strtoupper(Str::random(6));
+
+        // Guardar el código en la base de datos (temporalmente)
+        // En producción, podrías usar cache o una tabla temporal
+        Usuarios::updateOrCreate(
+            ['Email' => $email],
+            ['codigo_verificacion' => $codigo]
+        );
+
+        return $codigo;
+    }
 
 
 }

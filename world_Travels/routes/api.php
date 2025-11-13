@@ -25,6 +25,15 @@ use Illuminate\Container\Attributes\Auth;
 
     Route::post('registrar', [AuthController::class, 'registrar']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('enviar-codigo-verificacion', [AuthController::class, 'enviarCodigoVerificacion']);
+
+    // Rutas para Administradores
+    Route::post('administradores/login', [AdministradorController::class, 'login']);
+    Route::post('administradores/registrar', [AdministradorController::class, 'store']);
+
+    // Rutas para Empresas
+    Route::post('empresas/login', [EmpresaController::class, 'login']);
+    Route::post('empresas/registrar', [EmpresaController::class, 'store']);
 
     Route::group(['middleware' => [JwtMiddleware::class]], function () {
         Route::post('logout', [AuthController::class, 'logout']);
@@ -103,17 +112,3 @@ Route::post('crearComentarios', [ComentariosController::class, 'store']);
 Route::get('comentarios/{id}', [ComentariosController::class, 'show']);
 Route::put('actualizarComentarios/{id}', [ComentariosController::class, 'update']);
 Route::delete('eliminarComentarios/{id}', [ComentariosController::class, 'destroy']);
-
-// Rutas para Administradores
-Route::get('listarAdministradores', [AdministradorController::class, 'index']);
-Route::post('crearAdministradores', [AdministradorController::class, 'store']);
-Route::get('administradores/{id}', [AdministradorController::class, 'show']);
-Route::put('actualizarAdministradores/{id}', [AdministradorController::class, 'update']);
-Route::delete('eliminarAdministradores/{id}', [AdministradorController::class, 'destroy']);
-
-// Rutas para Empresas
-Route::get('listarEmpresas', [EmpresaController::class, 'index']);
-Route::post('crearEmpresas', [EmpresaController::class, 'store']);
-Route::get('empresas/{id}', [EmpresaController::class, 'show']);
-Route::put('actualizarEmpresas/{id}', [EmpresaController::class, 'update']);
-Route::delete('eliminarEmpresas/{id}', [EmpresaController::class, 'destroy']);

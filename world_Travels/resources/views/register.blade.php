@@ -49,6 +49,18 @@
                     <input type="text" id="name" name="name" class="w-full px-3 py-2 border rounded-md" required>
                 </div>
                 <div class="mb-4">
+                    <label for="apellido" class="block mb-2">Apellido</label>
+                    <input type="text" id="apellido" name="apellido" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div class="mb-4">
+                    <label for="telefono" class="block mb-2">Teléfono</label>
+                    <input type="text" id="telefono" name="telefono" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div class="mb-4">
+                    <label for="nacionalidad" class="block mb-2">Nacionalidad</label>
+                    <input type="text" id="nacionalidad" name="nacionalidad" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div class="mb-4">
                     <label for="email" class="block mb-2">Correo Electrónico</label>
                     <input type="email" id="email" name="email" class="w-full px-3 py-2 border rounded-md" required>
                 </div>
@@ -60,6 +72,18 @@
                     <label for="password_confirmation" class="block mb-2">Confirmar Contraseña</label>
                     <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-3 py-2 border rounded-md" required>
                 </div>
+                <div class="mb-4">
+                    <label for="role" class="block mb-2">Rol</label>
+                    <select id="role" name="role" class="w-full px-3 py-2 border rounded-md" required>
+                        <option value="Turista">Turista</option>
+                        <option value="Guía Turístico">Guía Turístico</option>
+                    </select>
+                </div>
+                <div class="mb-4" id="verification-code-section" style="display: none;">
+                    <label for="verification_code" class="block mb-2">Código de Verificación</label>
+                    <input type="text" id="verification_code" name="verification_code" class="w-full px-3 py-2 border rounded-md" placeholder="Ingresa el código de 6 caracteres" maxlength="6">
+                    <button type="button" id="send-code-btn" class="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Enviar Código</button>
+                </div>
                 <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Registrarse</button>
             </form>
             <p class="text-center mt-4">¿Ya tienes cuenta? <a href="{{ route('login') }}" class="text-blue-600">Inicia Sesión</a></p>
@@ -68,35 +92,106 @@
     </div>
 
     <script>
-        document.getElementById('register-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const password_confirmation = document.getElementById('password_confirmation').value;
+        // Mostrar/ocultar campo de código de verificación basado en el rol seleccionado
+        document.getElementById('role').addEventListener('change', function() {
+            const role = this.value;
+            const verificationSection = document.getElementById('verification-code-section');
+            if (role === 'Guía Turístico') {
+                verificationSection.style.display = 'block';
+            } else {
+                verificationSection.style.display = 'none';
+            }
+        });
 
-            if (password !== password_confirmation) {
-                document.getElementById('message').innerText = 'Las contraseñas no coinciden';
+        // Enviar código de verificación
+        document.getElementById('send-code-btn').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                document.getElementById('message').innerText = 'Por favor ingresa tu correo electrónico primero';
                 return;
             }
 
-            fetch('/api/registrar', {
+            fetch('http://127.0.0.1:8000/api/enviar-codigo-verificacion', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ Nombre: name, Apellido: '', Email: email, Contraseña: password, Telefono: '', Nacionalidad: '', Rol: 'Turista' }),
+                body: JSON.stringify({ Email: email }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('message').innerText = 'Código de verificación enviado a tu correo electrónico';
+                } else {
+                    document.getElementById('message').innerText = 'Error al enviar el código de verificación';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al enviar el código de verificación');
+                document.getElementById('message').innerText = 'Error al enviar el código de verificación';
+            });
+        });
+
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const apellido = document.getElementById('apellido').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const password_confirmation = document.getElementById('password_confirmation').value;
+            const telefono = document.getElementById('telefono').value;
+            const nacionalidad = document.getElementById('nacionalidad').value;
+            const role = document.getElementById('role').value;
+            const verification_code = document.getElementById('verification_code').value;
+
+            if (password !== password_confirmation) {
+                alert('Las contraseñas no coinciden');
+                document.getElementById('message').innerText = 'Las contraseñas no coinciden';
+                return;
+            }
+
+            const requestData = {
+                Nombre: name,
+                Apellido: apellido,
+                Email: email,
+                Contraseña: password,
+                Telefono: telefono,
+                Nacionalidad: nacionalidad,
+                Rol: role
+            };
+
+            if (role === 'Guía Turístico') {
+                requestData.codigo_verificacion = verification_code;
+            }
+
+            fetch('http://127.0.0.1:8000/api/registrar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     window.location.href = '{{ route("login") }}';
                 } else {
-                    document.getElementById('message').innerText = 'Error en el registro';
+                    let errorMessage = 'Error en el registro';
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.errors) {
+                        // Mostrar errores de validación
+                        const errors = Object.values(data.errors).flat();
+                        errorMessage = errors.join('\n');
+                    }
+                    alert(errorMessage);
+                    document.getElementById('message').innerText = errorMessage;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
+                alert('Error al registrarse. Revisa la consola para más detalles.');
                 document.getElementById('message').innerText = 'Error al registrarse';
             });
         });

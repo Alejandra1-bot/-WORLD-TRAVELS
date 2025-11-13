@@ -5,29 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Empresa;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
-/**
- * ---------------------------------------------------------
- * Controlador: EmpresaController
- * ---------------------------------------------------------
- * Este controlador gestiona todas las operaciones CRUD
- * relacionadas con la entidad "Empresa":
- * - Listar empresas
- * - Crear una nueva empresa
- * - Consultar una empresa específica
- * - Actualizar una empresa existente
- * - Eliminar una empresa
- */
 class EmpresaController extends Controller
 {
     /**
-     * -----------------------------------------------------
-     * Método: index()
-     * -----------------------------------------------------
-     * Función: Listar todas las empresas registradas.
-     * Flujo:
-     * - Recupera todos los registros de la tabla "empresas".
-     * - Retorna la colección completa en formato JSON.
+     * Listar todas las empresas
+     * - Recupera todos los registros de la tabla empresas.
+     * - Retorna la colección en formato JSON.
      */
     public function index()
     {
@@ -36,43 +21,40 @@ class EmpresaController extends Controller
     }
 
     /**
-     * -----------------------------------------------------
-     * Método: store(Request $request)
-     * -----------------------------------------------------
-     * Función: Crear una nueva empresa en la base de datos.
-     * Flujo:
-     * - Valida los datos recibidos desde la petición.
-     *   * Campos obligatorios: nombre, nit, direccion, ciudad.
-     * - Si falla la validación → responde con error 422.
-     * - Si pasa la validación → crea la empresa.
-     * - Devuelve la nueva empresa con código 201 (Created).
+     * Crear una nueva empresa
+     * - Valida los datos recibidos en la petición.
+     * - Si la validación falla, retorna un error 422 con los mensajes.
+     * - Si pasa la validación, crea un nuevo registro en la base de datos.
+     * - Devuelve la empresa creada con código 201 (Created).
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'nombre'    => 'required|string',
-            'nit'       => 'required|string|unique:empresas',
-            'direccion' => 'required|string',
-            'ciudad'    => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'nombre'     => 'required|string|max:255',
+            'nit'        => 'required|string|max:50|unique:empresas,nit',
+            'direccion'  => 'required|string|max:255',
+            'ciudad'     => 'required|string|max:100',
+            'correo'     => 'required|email|unique:empresas,correo',
+            'contraseña' => 'required|string|min:8',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $empresa = Empresa::create($validator->validated());
+        // Encriptar contraseña antes de guardar
+        $validatedData = $validator->validated();
+        $validatedData['contraseña'] = Hash::make($validatedData['contraseña']);
+
+        $empresa = Empresa::create($validatedData);
         return response()->json($empresa, 201);
     }
 
     /**
-     * -----------------------------------------------------
-     * Método: show(string $id)
-     * -----------------------------------------------------
-     * Función: Mostrar los datos de una empresa específica.
-     * Flujo:
-     * - Busca la empresa por su ID.
-     * - Si no existe → responde con error 404.
-     * - Si existe → retorna los datos de la empresa en JSON.
+     * Mostrar una empresa específica
+     * - Busca la empresa por ID.
+     * - Si no existe, retorna un error 404.
+     * - Si existe, devuelve la empresa en formato JSON.
      */
     public function show(string $id)
     {
@@ -86,17 +68,12 @@ class EmpresaController extends Controller
     }
 
     /**
-     * -----------------------------------------------------
-     * Método: update(Request $request, string $id)
-     * -----------------------------------------------------
-     * Función: Actualizar la información de una empresa.
-     * Flujo:
+     * Actualizar una empresa existente
      * - Busca la empresa por ID.
-     * - Si no existe → responde con error 404.
-     * - Valida los campos enviados (todos opcionales).
-     * - Si falla la validación → responde con error 422.
-     * - Si pasa la validación → actualiza la empresa en DB.
-     * - Retorna la empresa actualizada en formato JSON.
+     * - Si no existe, retorna un error 404.
+     * - Valida los datos recibidos (opcionales).
+     * - Si son válidos, actualiza el registro en la base de datos.
+     * - Retorna la empresa actualizada.
      */
     public function update(Request $request, string $id)
     {
@@ -106,31 +83,36 @@ class EmpresaController extends Controller
             return response()->json(['message' => 'Empresa no encontrada para editar'], 404);
         }
 
-        $validator = Validator::make($request->all(),[
-            'nombre'    => 'string',
-            'nit'       => 'string|unique:empresas,nit,' . $id,
-            'direccion' => 'string',
-            'ciudad'    => 'string',
+        $validator = Validator::make($request->all(), [
+            'nombre'     => 'string|max:255',
+            'nit'        => 'string|max:50|unique:empresas,nit,' . $id,
+            'direccion'  => 'string|max:255',
+            'ciudad'     => 'string|max:100',
+            'correo'     => 'email|unique:empresas,correo,' . $id,
+            'contraseña' => 'string|min:6',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $empresa->update($validator->validated());
+        $validatedData = $validator->validated();
+
+        // Si se envía nueva contraseña, encriptarla
+        if (isset($validatedData['contraseña'])) {
+            $validatedData['contraseña'] = Hash::make($validatedData['contraseña']);
+        }
+
+        $empresa->update($validatedData);
         return response()->json($empresa);
     }
 
     /**
-     * -----------------------------------------------------
-     * Método: destroy(string $id)
-     * -----------------------------------------------------
-     * Función: Eliminar una empresa de la base de datos.
-     * Flujo:
+     * Eliminar una empresa
      * - Busca la empresa por ID.
-     * - Si no existe → responde con error 404.
-     * - Si existe → elimina el registro.
-     * - Retorna mensaje de confirmación en JSON.
+     * - Si no existe, retorna un error 404.
+     * - Si existe, elimina el registro de la base de datos.
+     * - Retorna un mensaje de confirmación.
      */
     public function destroy(string $id)
     {
