@@ -15,9 +15,9 @@ class Reservas extends Model
      * Campos que se pueden asignar de manera masiva (mass assignment).
      */
     protected $fillable = [
-        'fecha_reserva',      // Fecha en que se hace la reserva
-        'cantidad_personas',  // Número de personas incluidas en la reserva
-        'estado',             // Estado de la reserva (ej: pendiente, confirmada, cancelada)
+        'Fecha_Reserva',      // Fecha en que se hace la reserva
+        'Numero_Personas',    // Número de personas incluidas en la reserva
+        'Estado',             // Estado de la reserva (ej: pendiente, confirmada, cancelada)
         'idUsuario',          // Relación con la tabla usuarios
         'idActividad'         // Relación con la tabla actividades
     ];

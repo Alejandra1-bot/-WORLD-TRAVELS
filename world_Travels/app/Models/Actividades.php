@@ -18,6 +18,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Actividades extends Model
 {
     /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($actividad) {
+            // Eliminar reservas relacionadas
+            $actividad->reservas()->delete();
+            // Eliminar comentarios relacionados
+            $actividad->comentarios()->delete();
+        });
+    }
+    /**
      * Nombre de la tabla asociada en la base de datos.
      *
      * @var string
@@ -31,16 +45,16 @@ class Actividades extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'nombre_actividad', // Nombre de la actividad
-        'descripcion',      // Descripción de la actividad
-        'fecha',            // Fecha programada
-        'hora',             // Hora programada
-        'precio',           // Precio por persona
-        'cupo_maximo',      // Número máximo de participantes
-        'ubicacion',        // Dirección o lugar de la actividad
-        'imagen',           // Ruta o URL de la imagen asociada
-        'idCategoria',      // Relación con la tabla categorias_actividades
-        'idUsuario',        // Relación con la tabla usuarios
+        'Nombre_Actividad', // Nombre de la actividad
+        'Descripcion',      // Descripción de la actividad
+        'Fecha_Actividad',  // Fecha programada
+        'Hora_Actividad',   // Hora programada
+        'Precio',           // Precio por persona
+        'Cupo_Maximo',      // Número máximo de participantes
+        'Ubicacion',        // Dirección o lugar de la actividad
+        'Imagen',           // Ruta o URL de la imagen asociada
+        'idCategoria',      // Relación con la tabla categorias__actividades
+        'idEmpresa',        // Relación con la tabla empresas
         'idMunicipio'       // Relación con la tabla municipios
     ];
 
@@ -56,14 +70,14 @@ class Actividades extends Model
     }
 
     /**
-     * Relación con Usuarios.
-     * Una actividad pertenece a un usuario (quien la creó o administra).
+     * Relación con Empresas.
+     * Una actividad pertenece a una empresa (quien la creó o administra).
      *
      * @return BelongsTo
      */
-    public function usuario(): BelongsTo
+    public function empresa(): BelongsTo
     {
-        return $this->belongsTo(Usuarios::class, 'idUsuario');
+        return $this->belongsTo(Empresa::class, 'idEmpresa');
     }
 
     /**

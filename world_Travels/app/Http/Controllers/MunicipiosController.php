@@ -29,8 +29,7 @@ class MunicipiosController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'Nombre'         => 'required|string',
-            'idDepartamento' => 'required|integer',
+            'Nombre_Municipio' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -75,9 +74,7 @@ class MunicipiosController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'Nombre'         => 'string',
-            'idDepartamento' => 'integer',
-            'idActividad'    => 'integer', // Si este campo no existe en la BD, habría que quitarlo
+            'Nombre_Municipio' => 'string',
         ]);
 
         if ($validator->fails()) {

@@ -10,12 +10,12 @@ class ComentariosController extends Controller
 {
     /**
      * Listar todos los comentarios
-     * - Obtiene todos los registros de la tabla comentarios.
+     * - Obtiene todos los registros de la tabla comentarios con la relación usuario.
      * - Devuelve la lista completa en formato JSON.
      */
     public function index()
     {
-        $comentarios = Comentarios::all();
+        $comentarios = Comentarios::with('usuario')->get();
         return response()->json($comentarios);
     }
 
@@ -46,13 +46,13 @@ class ComentariosController extends Controller
 
     /**
      * Mostrar un comentario específico
-     * - Busca un comentario por su ID.
+     * - Busca un comentario por su ID con la relación usuario.
      * - Si no existe, devuelve error 404.
      * - Si existe, retorna el comentario en formato JSON.
      */
     public function show(string $id)
     {
-        $comentario = Comentarios::find($id);
+        $comentario = Comentarios::with('usuario')->find($id);
 
         if (!$comentario) {
             return response()->json(['message' => 'Comentario no encontrado'], 404);

@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\UsuariosController;
-use App\Http\Controllers\DepartamentosController;
 use App\Http\Controllers\MunicipiosController;
 use App\Http\Controllers\Categorias_ActividadesController;
 use App\Http\Controllers\ActividadesController;
@@ -34,6 +33,10 @@ use Illuminate\Container\Attributes\Auth;
     // Rutas para Empresas
     Route::post('empresas/login', [EmpresaController::class, 'login']);
     Route::post('empresas/registrar', [EmpresaController::class, 'store']);
+    Route::get('listarEmpresas', [EmpresaController::class, 'index']);
+    Route::get('empresas/{id}', [EmpresaController::class, 'show']);
+    Route::put('actualizarEmpresas/{id}', [EmpresaController::class, 'update']);
+    Route::delete('eliminarEmpresas/{id}', [EmpresaController::class, 'destroy']);
 
     Route::group(['middleware' => [JwtMiddleware::class]], function () {
         Route::post('logout', [AuthController::class, 'logout']);
@@ -41,10 +44,6 @@ use Illuminate\Container\Attributes\Auth;
     });
 
     Route::group(['middleware' => [JwtMiddleware::class . ':Administrador']], function () {
-    Route::post('crearDepartamentos', [DepartamentosController::class, 'store']);
-    Route::get('departamentos/{id}', [DepartamentosController::class, 'show']);
-    Route::put('actualizarDepartamentos/{id}', [DepartamentosController::class, 'update']);
-    Route::delete('eliminarDepartamentos/{id}', [DepartamentosController::class, 'destroy']);
     Route::post('crearMunicipios', [MunicipiosController::class, 'store']);
     Route::get('municipios/{id}', [MunicipiosController::class, 'show']);
     Route::put('actualizarMunicipios/{id}', [MunicipiosController::class, 'update']);
@@ -56,7 +55,7 @@ use Illuminate\Container\Attributes\Auth;
     Route::post('crearActividades', [ActividadesController::class, 'store']);
     Route::get('actividades/{id}', [ActividadesController::class, 'show']);
     Route::put('actualizarActividades/{id}', [ActividadesController::class, 'update']);
-    Route::delete('eliminarActividades/{id}', [ActividadesController::class, 'destroy']);
+    // Route::delete('eliminarActividades/{id}', [ActividadesController::class, 'destroy']);
     Route::get('listarReservas', [ReservasController::class, 'index']);
     Route::put('actualizarComentarios/{id}', [ComentariosController::class, 'update']);
     Route::put('bloquearUsuarios/{id}', [UsuariosController::class, 'bloquear']);
@@ -71,12 +70,6 @@ Route::get('usuarios/{id}', [UsuariosController::class, 'show']);
 Route::put('actualizarUsuarios/{id}', [UsuariosController::class, 'update']);
 Route::delete('eliminarUsuarios/{id}', [UsuariosController::class, 'destroy']);
 
- // Rutas para Departamentos
-Route::get('listarDepartamentos', [DepartamentosController::class, 'index']);
-// Route::post('crearDepartamentos', [DepartamentosController::class, 'store']);
-// Route::get('departamentos/{id}', [DepartamentosController::class, 'show']);
-// Route::put('actualizarDepartamentos/{id}', [DepartamentosController::class, 'update']);
-// Route::delete('eliminarDepartamentos/{id}', [DepartamentosController::class, 'destroy']);
 
 // Rutas para Municipios
 Route::get('listarMunicipios', [MunicipiosController::class, 'index']);
@@ -97,7 +90,7 @@ Route::get('actividades', [ActividadesController::class, 'index']);
 // Route::post('crearActividades', [ActividadesController::class, 'store']);
 // Route::get('actividades/{id}', [ActividadesController::class, 'show']);
 // Route::put('actualizarActividades/{id}', [ActividadesController::class, 'update']);
-// Route::delete('eliminarActividades/{id}', [ActividadesController::class, 'destroy']);
+Route::delete('eliminarActividades/{id}', [ActividadesController::class, 'destroy']);
 
 // Rutas para Reservas
 // Route::get('listarReservas', [ReservasController::class, 'index']);

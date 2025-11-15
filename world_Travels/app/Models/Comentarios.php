@@ -15,13 +15,7 @@ class Comentarios extends Model
      * Campos que se pueden asignar de manera masiva (mass assignment).
      * Estos corresponden a las columnas de la tabla.
      */
-    protected $fillable = [
-        'comentario',        // Texto del comentario
-        'calificacion',      // Calificación (ej: estrellas, puntuación)
-        'fecha_comentario',  // Fecha en que se hizo el comentario
-        'idUsuario',         // Relación con la tabla usuarios
-        'idActividad'        // Relación con la tabla actividades
-    ];
+    protected $fillable = ['Contenido', 'Calificacion', 'Fecha_Comentario', 'idUsuario', 'idActividad'];
 
     /**
      * Relación con Usuarios
