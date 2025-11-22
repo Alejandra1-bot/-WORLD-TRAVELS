@@ -10,12 +10,12 @@ class ComentariosController extends Controller
 {
     /**
      * Listar todos los comentarios
-     * - Obtiene todos los registros de la tabla comentarios con la relación usuario.
+     * - Obtiene todos los registros de la tabla comentarios con las relaciones usuario y actividad.
      * - Devuelve la lista completa en formato JSON.
      */
     public function index()
     {
-        $comentarios = Comentarios::with('usuario')->get();
+        $comentarios = Comentarios::with('usuario', 'actividad')->get();
         return response()->json($comentarios);
     }
 
@@ -24,7 +24,7 @@ class ComentariosController extends Controller
      * - Valida los datos recibidos en la petición.
      * - Si la validación falla, devuelve error 422.
      * - Si es válida, inserta un nuevo registro en la base de datos.
-     * - Devuelve el comentario creado con código 201 (Created).
+     * - Devuelve el comentario creado con las relaciones con código 201 (Created).
      */
     public function store(Request $request)
     {
@@ -41,18 +41,19 @@ class ComentariosController extends Controller
         }
 
         $comentario = Comentarios::create($validator->validated());
+        $comentario = Comentarios::with('usuario', 'actividad')->find($comentario->id);
         return response()->json($comentario, 201);
     }
 
     /**
      * Mostrar un comentario específico
-     * - Busca un comentario por su ID con la relación usuario.
+     * - Busca un comentario por su ID con las relaciones usuario y actividad.
      * - Si no existe, devuelve error 404.
      * - Si existe, retorna el comentario en formato JSON.
      */
     public function show(string $id)
     {
-        $comentario = Comentarios::with('usuario')->find($id);
+        $comentario = Comentarios::with('usuario', 'actividad')->find($id);
 
         if (!$comentario) {
             return response()->json(['message' => 'Comentario no encontrado'], 404);
@@ -67,7 +68,7 @@ class ComentariosController extends Controller
      * - Si no existe, retorna error 404.
      * - Valida los datos recibidos (todos opcionales).
      * - Si son válidos, actualiza el registro en la base de datos.
-     * - Retorna el comentario actualizado.
+     * - Retorna el comentario actualizado con las relaciones.
      */
     public function update(Request $request, string $id)
     {
@@ -90,6 +91,7 @@ class ComentariosController extends Controller
         }
 
         $comentario->update($validator->validated());
+        $comentario = Comentarios::with('usuario', 'actividad')->find($comentario->id);
         return response()->json($comentario);
     }
 

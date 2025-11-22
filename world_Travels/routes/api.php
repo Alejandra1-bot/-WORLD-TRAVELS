@@ -28,11 +28,15 @@ use Illuminate\Container\Attributes\Auth;
 
     // Rutas para Administradores
     Route::post('administradores/login', [AdministradorController::class, 'login']);
-    Route::post('administradores/registrar', [AdministradorController::class, 'store']);
+    Route::post('crearAdministradores', [AdministradorController::class, 'store']);
+    Route::get('listarAdministradores', [AdministradorController::class, 'index']);
+    Route::get('administradores/{id}', [AdministradorController::class, 'show']);
+    Route::put('actualizarAdministradores/{id}', [AdministradorController::class, 'update']);
+    Route::delete('eliminarAdministradores/{id}', [AdministradorController::class, 'destroy']);
 
     // Rutas para Empresas
     Route::post('empresas/login', [EmpresaController::class, 'login']);
-    Route::post('empresas/registrar', [EmpresaController::class, 'store']);
+    Route::post('crearEmpresas', [EmpresaController::class, 'store']);
     Route::get('listarEmpresas', [EmpresaController::class, 'index']);
     Route::get('empresas/{id}', [EmpresaController::class, 'show']);
     Route::put('actualizarEmpresas/{id}', [EmpresaController::class, 'update']);
@@ -87,9 +91,9 @@ Route::get('listarCategorias', [Categorias_ActividadesController::class, 'index'
 // Rutas para Actividades
 Route::get('listarActividades', [ActividadesController::class, 'index']);
 Route::get('actividades', [ActividadesController::class, 'index']);
-// Route::post('crearActividades', [ActividadesController::class, 'store']);
-// Route::get('actividades/{id}', [ActividadesController::class, 'show']);
-// Route::put('actualizarActividades/{id}', [ActividadesController::class, 'update']);
+Route::post('crearActividades', [ActividadesController::class, 'store']);
+Route::get('actividades/{id}', [ActividadesController::class, 'show']);
+Route::put('actualizarActividades/{id}', [ActividadesController::class, 'update']);
 Route::delete('eliminarActividades/{id}', [ActividadesController::class, 'destroy']);
 
 // Rutas para Reservas

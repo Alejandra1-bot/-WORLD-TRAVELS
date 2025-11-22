@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Administrador;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 /**
  * ---------------------------------------------------------
@@ -53,7 +57,7 @@ class AdministradorController extends Controller
             'nombre'     => 'required|string',
             'apellido'   => 'required|string',
             'telefono'   => 'required|string',
-            'correo'     => 'required|string|email|unique:administradores',
+            'correo'     => 'required|string|email|unique:administradores,correo',
             'documento'  => 'required|string|unique:administradores',
             'contraseña' => 'required|string',
         ]);
@@ -62,8 +66,59 @@ class AdministradorController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $administrador = Administrador::create($validator->validated());
+        // Encriptar contraseña antes de guardar
+        $validatedData = $validator->validated();
+        $validatedData['contraseña'] = Hash::make($validatedData['contraseña']);
+
+        // Crear usuario en la tabla users
+        $user = User::create([
+            'name' => $validatedData['nombre'] . ' ' . $validatedData['apellido'],
+            'email' => $validatedData['correo'],
+            'password' => $validatedData['contraseña'],
+            'role' => 'administrador',
+        ]);
+
+        // Crear administrador
+        $administrador = Administrador::create($validatedData);
         return response()->json($administrador, 201);
+    }
+
+    /**
+     * -----------------------------------------------------
+     * Método: login(Request $request)
+     * -----------------------------------------------------
+     * Función: Autenticar a un administrador.
+     * Flujo:
+     * - Valida email y contraseña.
+     * - Intenta autenticar con JWT.
+     * - Retorna token y datos si es exitoso.
+     */
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'correo_electronico' => 'required|string|email',
+            'contraseña' => 'required|string|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $credentials = [
+            'correo_electronico' => $request->correo_electronico,
+            'password' => $request->contraseña,
+        ];
+
+        if (!$token = auth('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Credenciales inválidas'], 401);
+        }
+
+        $administrador = auth('api')->user();
+
+        return response()->json([
+            'token' => $token,
+            'administrador' => $administrador,
+        ]);
     }
 
     /**
@@ -121,7 +176,44 @@ class AdministradorController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $administrador->update($validator->validated());
+        $oldEmail = $administrador->correo;
+        $oldNombre = $administrador->nombre;
+        $oldApellido = $administrador->apellido;
+
+        $validatedData = $validator->validated();
+
+        // Si se envía nueva contraseña, encriptarla
+        if (isset($validatedData['contraseña'])) {
+            $validatedData['contraseña'] = Hash::make($validatedData['contraseña']);
+        }
+
+        DB::transaction(function () use ($administrador, $validatedData, $oldEmail, $oldNombre, $oldApellido) {
+            $administrador->update($validatedData);
+
+            // Actualizar también en tabla users
+            $user = User::where('email', $oldEmail)->first();
+            if ($user) {
+                $userData = [];
+                if (isset($validatedData['nombre']) || isset($validatedData['apellido'])) {
+                    $userData['name'] = ($validatedData['nombre'] ?? $oldNombre) . ' ' . ($validatedData['apellido'] ?? $oldApellido);
+                }
+                if (isset($validatedData['contraseña'])) {
+                    $userData['password'] = $validatedData['contraseña'];
+                }
+                if (isset($validatedData['correo'])) {
+                    $userData['email'] = $validatedData['correo'];
+                }
+                if (isset($validatedData['telefono'])) {
+                    $userData['telefono'] = $validatedData['telefono'];
+                }
+
+                if (!empty($userData)) {
+                    Log::info('Updating user with data: ' . json_encode($userData));
+                    $user->update($userData);
+                }
+            }
+        });
+
         return response()->json($administrador);
     }
 

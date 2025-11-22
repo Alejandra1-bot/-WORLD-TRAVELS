@@ -25,6 +25,7 @@ class User extends Authenticatable implements JWTSubject
         'nit',
         'direccion',
         'ciudad',
+        'telefono',
         'is_blocked',
         'fcm_token',
     ];

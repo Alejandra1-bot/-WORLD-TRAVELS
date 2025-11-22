@@ -10,12 +10,12 @@ class ReservasController extends Controller
 {
     /**
      * Listar todas las reservas
-     * - Recupera todos los registros de la tabla reservas.
+     * - Recupera todos los registros de la tabla reservas con la relación de actividad.
      * - Devuelve la colección completa en formato JSON.
      */
     public function index()
     {
-        $reservas = Reservas::all();
+        $reservas = Reservas::with('actividad')->get();
         return response()->json($reservas);
     }
 
@@ -25,7 +25,7 @@ class ReservasController extends Controller
      * - Valida existencia de usuario y actividad en sus tablas correspondientes.
      * - Si falla la validación, retorna error 422 con detalles.
      * - Si pasa, guarda el registro en la base de datos.
-     * - Devuelve la reserva creada con código 201 (Created).
+     * - Devuelve la reserva creada con la relación de actividad con código 201 (Created).
      */
     public function store(Request $request)
     {
@@ -42,18 +42,19 @@ class ReservasController extends Controller
         }
 
         $reserva = Reservas::create($validator->validated());
+        $reserva = Reservas::with('actividad')->find($reserva->id);
         return response()->json($reserva, 201);
     }
 
     /**
      * Mostrar una reserva específica
-     * - Busca una reserva por su ID.
+     * - Busca una reserva por su ID con la relación de actividad.
      * - Si no existe, retorna error 404.
      * - Si existe, devuelve el registro en formato JSON.
      */
     public function show(string $id)
     {
-        $reserva = Reservas::find($id);
+        $reserva = Reservas::with('actividad')->find($id);
 
         if (!$reserva) {
             return response()->json(['message' => 'Reserva no encontrada'], 404);
@@ -69,7 +70,7 @@ class ReservasController extends Controller
      * - Valida los datos recibidos (todos opcionales).
      * - Si falla la validación, retorna error 422.
      * - Si pasa, actualiza el registro en la base de datos.
-     * - Retorna la reserva actualizada.
+     * - Retorna la reserva actualizada con la relación de actividad.
      */
     public function update(Request $request, string $id)
     {
@@ -92,6 +93,7 @@ class ReservasController extends Controller
         }
 
         $reserva->update($validator->validated());
+        $reserva = Reservas::with('actividad')->find($reserva->id);
         return response()->json($reserva);
     }
 

@@ -7,6 +7,7 @@ use App\Models\Usuarios;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * ---------------------------------------------------------
@@ -60,6 +61,8 @@ class UsuariosController extends Controller
             'Telefono'       => 'required|string',
             'Nacionalidad'   => 'required|string',
             'Fecha_Registro' => 'required|date',
+            // 'intereses' => 'required|string',
+            //  'idiomas'=> 'required|string',
 
         ]);
 
@@ -86,6 +89,8 @@ class UsuariosController extends Controller
             'Telefono' => $data['Telefono'],
             'Nacionalidad' => $data['Nacionalidad'],
             'Fecha_Registro' => $data['Fecha_Registro'],
+            'intereses'  => $data['Intereses'],
+            'idiomas' => $data['Idiomas'],
         ]);
         return response()->json($usuarios,201);  
     } 
@@ -140,6 +145,9 @@ class UsuariosController extends Controller
             'Telefono' => 'string|max:20',
             'Nacionalidad' => 'string|max:255',
             'Rol' => 'string|in:Turista,Guía Turístico,Administrador',
+            // 'Intereses' => 'nullable|string',
+            // 'Idioma' => 'nullable|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -156,7 +164,19 @@ class UsuariosController extends Controller
             unset($data['Contrasena']);
         }
 
+        // Manejar upload de foto
+        if ($request->hasFile('foto')) {
+            // Eliminar foto anterior si existe
+            if ($usuarios->foto && Storage::disk('public')->exists($usuarios->foto)) {
+                Storage::disk('public')->delete($usuarios->foto);
+            }
+            // Guardar nueva foto
+            $path = $request->file('foto')->store('fotos_perfil', 'public');
+            $data['foto'] = $path;
+        }
+
         $usuarios->update($data);
+        $usuarios->refresh();
 
         // Actualizar también en tabla users
         $user = User::where('email', $oldEmail)->first();
@@ -202,6 +222,11 @@ class UsuariosController extends Controller
 
         if (!$usuarios) {
             return response()->json(['menssage'=> 'Usuario no encontrado para eliminar'], 404);
+        }
+
+        // Eliminar foto si existe
+        if ($usuarios->foto && Storage::disk('public')->exists($usuarios->foto)) {
+            Storage::disk('public')->delete($usuarios->foto);
         }
 
         // Eliminar también de tabla users

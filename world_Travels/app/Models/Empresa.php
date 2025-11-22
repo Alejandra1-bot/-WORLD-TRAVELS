@@ -17,7 +17,8 @@ class Empresa extends Authenticatable implements JWTSubject
         'nombre',
         'direccion',
         'ciudad',
-        'correo',
+        'email',
+        'telefono',
         'contraseña'
     ];
 
@@ -63,7 +64,8 @@ class Empresa extends Authenticatable implements JWTSubject
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
             'ciudad' => 'required|string|max:255',
-            'correo' => 'required|string|email|max:255|unique:empresas,correo,' . $id,
+            'email' => 'required|string|email|max:255|unique:empresas,email,' . $id,
+            'telefono' => 'nullable|string|max:20',
             'contraseña' => $id ? 'nullable|string|min:8' : 'required|string|min:8'
         ];
     }

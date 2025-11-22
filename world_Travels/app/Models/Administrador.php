@@ -2,26 +2,20 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Administrador extends Model
-{
-    use HasFactory;
-
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class Administrador extends Authenticatable implements JWTSubject
 {
+    use HasFactory;
 
     protected $table = 'administradores';
 
     protected $fillable = [
         'nombre',
         'apellido',
-        'correo_electronico',
+        'correo',
         'telefono',
         'documento',
         'contraseña'
@@ -67,7 +61,7 @@ class Administrador extends Authenticatable implements JWTSubject
         return [
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
-            'correo_electronico' => 'required|string|email|max:255|unique:administradores,correo_electronico,' . $id,
+            'correo' => 'required|string|email|max:255|unique:administradores,correo,' . $id,
             'telefono' => 'required|string|max:20',
             'documento' => 'required|string|max:20|unique:administradores,documento,' . $id,
             'contraseña' => $id ? 'nullable|string|min:8' : 'required|string|min:8'

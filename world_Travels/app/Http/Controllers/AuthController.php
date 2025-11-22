@@ -25,7 +25,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
             'Telefono' => 'sometimes|required|string|max:20',
             'Nacionalidad' => 'sometimes|required|string|max:255',
-            'roles' => 'required|string|in:usuario,empresa,administrador',
+            'role' => 'required|string|in:usuario,empresa,administrador',
             'NombreEmpresa' => 'sometimes|required|string|max:255',
             'NitEmpresa' => 'sometimes|required|string|max:255',
             'DireccionEmpresa' => 'sometimes|required|string|max:255',
@@ -43,10 +43,10 @@ class AuthController extends Controller
             'name' => $request->Nombre ? $request->Nombre . ' ' . $request->Apellido : $request->NombreEmpresa,
             'email' => $request->Email,
             'password' => Hash::make($request->password),
-            'role' => $request->roles,
-            'nit' => $request->roles === 'empresa' ? $request->NitEmpresa : null,
-            'direccion' => $request->roles === 'empresa' ? $request->DireccionEmpresa : null,
-            'ciudad' => $request->roles === 'empresa' ? $request->CiudadEmpresa : null,
+            'role' => $request->role,
+            'nit' => $request->role === 'empresa' ? $request->NitEmpresa : null,
+            'direccion' => $request->role === 'empresa' ? $request->DireccionEmpresa : null,
+            'ciudad' => $request->role === 'empresa' ? $request->CiudadEmpresa : null,
         ]);
        
 
@@ -65,21 +65,10 @@ class AuthController extends Controller
         //     }
         // }
 
-        $usuarios = Usuarios::create([
-            'Nombre' => $request->Nombre,
-            'Apellido' => $request->Apellido,
-            'Email' => $request->Email,
-            'Contraseña' => Hash::make($request->Contraseña),
-            'Telefono' => $request->Telefono,
-            'Nacionalidad' => $request->Nacionalidad,
-            'Rol' => $request->Rol,
-            'codigo_verificacion' => null, // Limpiar después del registro
-        ]);
-
         $userId = $user->id;
 
         // Crear registro específico según el rol
-        if ($request->roles === 'usuario') {
+        if ($request->role === 'usuario') {
             Usuarios::create([
                 'Nombre' => $request->Nombre,
                 'Apellido' => $request->Apellido,
@@ -89,7 +78,7 @@ class AuthController extends Controller
                 'Nacionalidad' => $request->Nacionalidad,
                 'Fecha_Registro' => now(),
             ]);
-        } elseif ($request->roles === 'empresa') {
+        } elseif ($request->role === 'empresa') {
             Empresa::create([
                 'nombre' => $request->NombreEmpresa,
                 'nit' => $request->NitEmpresa,
@@ -98,7 +87,7 @@ class AuthController extends Controller
                 'email' => $request->Email,
                 'contraseña' => Hash::make($request->password),
             ]);
-        } elseif ($request->roles === 'administrador') {
+        } elseif ($request->role === 'administrador') {
             Administrador::create([
                 'nombre' => $request->Nombre,
                 'apellido' => $request->Apellido,

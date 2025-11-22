@@ -26,6 +26,9 @@ class Usuarios extends Model implements JWTSubject
         'Fecha_Registro',
         'Rol',
         'is_blocked',
+        // 'intereses',
+        // 'idiomas',
+        'foto',
 
     ];
 
@@ -97,5 +100,13 @@ class Usuarios extends Model implements JWTSubject
     public function getAuthIdentifier()
     {
         return $this->getKey();
+    }
+
+    /**
+     * Accessor para obtener la URL completa de la foto
+     */
+    public function getFotoUrlAttribute()
+    {
+        return $this->foto ? asset('storage/' . $this->foto) : null;
     }
 }
